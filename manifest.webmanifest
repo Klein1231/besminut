@@ -1,0 +1,23 @@
+{
+ "name": "Бес минут",
+ "short_name": "Бес минут",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#E8EEEC",
+ "theme_color": "#D9731F",
+ "lang": "kk",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}

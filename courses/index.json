@@ -1,0 +1,12 @@
+{
+ "packs": [
+  {
+   "path": "courses/microprocessors/01-history.json",
+   "v": "72886782bbb1"
+  },
+  {
+   "path": "courses/microprocessors/02-structure.json",
+   "v": "0ff08bc7a179"
+  }
+ ]
+}
