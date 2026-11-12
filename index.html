@@ -417,6 +417,20 @@ details.backup summary{font-family:var(--f-body);font-size:15px;text-transform:n
 .theme-seg button{border:0;background:transparent;border-radius:10px;padding:10px 4px;font-size:14px;color:var(--muted);font-weight:500}
 .theme-seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:70;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:14px;font-size:14px;box-shadow:var(--shadow);max-width:calc(100vw - 32px)}
+.icon-btn.sm{width:32px;height:32px;font-size:13px;color:var(--muted);box-shadow:none;background:var(--sunk)}
+.chip.sm{padding:4px 10px;font-size:13px;flex:none;background:var(--surface);border:0;box-shadow:var(--shadow);color:var(--accent);font-weight:500}
+.grp-box{margin-bottom:10px}
+.grp-list{border-top:1px solid var(--line)}
+.chev{display:grid;place-items:center;width:36px;font-size:22px;color:var(--muted);transition:transform .15s}
+.chev.open{transform:rotate(90deg)}
+.tapzone{min-height:calc(100vh - 90px);position:relative}
+.edge-hint{position:fixed;inset:45% 0 auto 0;display:flex;justify-content:space-between;padding:0 6px;pointer-events:none;opacity:0}
+.edge-hint span{width:34px;height:60px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:30px}
+.edge-hint.show{animation:hint 2.6s ease}
+@keyframes hint{0%,100%{opacity:0}15%,70%{opacity:.9}}
+.pull-hint{height:4px;width:40px;border-radius:2px;background:var(--line);margin:0 auto -6px}
+.lv-h .lec-top{align-items:flex-start}
+.lv-h .c-f{overflow-wrap:normal;word-break:normal;font-size:19px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -586,12 +600,13 @@ function closeSheet(){if(SHEET){SHEET.remove();SHEET=null;sheetCtx=null}}
 function nameSheet(title,val,ctx,ph){openSheet(title,`<form id="sform" class="sheet-form"><input id="si" value="${esc(val||'')}" placeholder="${esc(ph||'Атауы')}" maxlength="80" autocomplete="off"><button class="btn primary wide">Сақтау</button></form>`,ctx)}
 
 /* ---------- object helpers ---------- */
-function objOf(key){const [t,id]=key.split(':');if(t==='f')return folder(id);if(t==='c')return course(id);if(t==='n')return S.notes.find(n=>n.id===id);if(t==='l'){const c=course(curCourse);return c&&c.lectures.find(l=>l.id===id)}}
+function objOf(key){const [t,id]=key.split(':');if(t==='f')return folder(id);if(t==='c')return course(id);if(t==='n')return S.notes.find(n=>n.id===id);if(t==='l'){const c=course(curCourse);return c&&c.lectures.find(l=>l.id===id)}if(t==='g'){const c=course(curCourse);return c&&(c.groups||[]).find(g=>g.id===id)}}
 function itemMenu(key){
   const t=key[0],o=objOf(key);if(!o)return '';
   const pin=`<button data-act="pin" data-v="${key}">${o.pinned?'Бекітуден алу':'Бекіту'}</button>`;
   if(t==='n')return pin+`<hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
-  if(t==='l')return `<button data-act="lreset" data-v="${key}">Басынан оқу</button><button data-act="ren" data-v="${key}">Атын өзгерту</button><hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
+  if(t==='g')return `<button data-act="ren" data-v="${key}">Атын өзгерту</button><hr><button class="danger" data-act="rm" data-v="${key}">Папканы өшіру</button>`;
+  if(t==='l')return pin+`<button data-act="lmv" data-v="${key}">Папкаға жылжыту…</button><button data-act="lreset" data-v="${key}">Басынан оқу</button><button data-act="ren" data-v="${key}">Атын өзгерту</button><hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
   return pin+`<button data-act="emo" data-v="${key}">Иконка таңдау</button><button data-act="ren" data-v="${key}">Атын өзгерту</button><button data-act="mvsheet" data-v="${key}">Жылжыту…</button><hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
 }
 function moveSheet(key){
@@ -626,17 +641,27 @@ function vSpace(space){
     <p class="msg" id="pmsg"></p>
   </section>`;
 }
+function lecRow(c,L,drag){
+  const key='l:'+L.id,doc=isDoc(L);
+  const prog=L.done?'<span class="ok">✓ Оқылды</span>':`<span class="pct">${doc?`${L.seen||0}/${L.units} ${L.kind==='pdf'||L.kind==='img'?'бет':'бөлім'}`:`${Math.min(L.pos||0,parts(L))}/${parts(L)}`}</span>`;
+  return `<div class="item" data-key="${key}"><button class="row-main lec-main" data-act="lec" data-c="${c.id}" data-v="${L.id}"><span class="txt"><span class="lec-top"><span class="c-f">${L.pinned?'<i class="pin">'+ICON.pin+'</i>':''}${esc(L.title)}</span>${prog}</span>${segs(L)}<span class="meta"><span class="kind">${L.pack?'Сабақ':KIND[L.kind]||'Мәтін'}</span>${L.ex?'<span class="ex">мысал</span>':''}</span></span></button><button class="more" data-act="imenu" data-v="${key}" aria-label="Әрекеттер">${DOTS}</button>${drag?`<span class="grip" aria-label="Ретін өзгерту">${GRIP}</span>`:''}</div>`;
+}
+let openGroups=new Set();
 function vCourse(){
   const c=course(curCourse);if(!c){tab='courses';return vSpace('courses')}
-  const sp=c.space,back=c.folder?folder(c.folder):null;
+  const sp=c.space,back=c.folder?folder(c.folder):null,groups=c.groups||[],gids=new Set(groups.map(g=>g.id));
+  const pinned=c.lectures.filter(L=>L.pinned),loose=c.lectures.filter(L=>!L.pinned&&!gids.has(L.group));
+  const gsec=groups.map(g=>{const ls=c.lectures.filter(L=>!L.pinned&&L.group===g.id),open=openGroups.has(g.id),done=ls.filter(L=>L.done).length;
+    return `<div class="box grp-box"><div class="item" data-key="g:${g.id}"><button class="row-main" data-act="gtoggle" data-v="${g.id}"><span class="ico f">${ICON.folder}</span><span class="txt"><span class="c-f">${esc(g.name)}</span><span class="meta">${ls.length} сабақ${ls.length?` · ${done} оқылды`:''}</span></span></button><button class="more" data-act="imenu" data-v="g:${g.id}" aria-label="Әрекеттер">${DOTS}</button><span class="chev${open?' open':''}">›</span></div>
+      ${open?(ls.length?`<div class="sortable grp-list">${ls.map(L=>lecRow(c,L,true)).join('')}</div>`:'<p class="hint" style="padding:0 16px 14px;margin:0">Бос. Сабақтың ⋯ мәзірінен «Папкаға жылжыту» таңда.</p>'):''}</div>`}).join('');
   return `
   <header class="top">${topBar(`<nav class="crumbs"><button data-act="open" data-v="${c.folder||''}" data-s="${sp}">← ${back?esc(back.name):SPACE[sp].title}</button></nav>`,
-    `<button class="icon-btn" data-act="addmat" aria-label="Материал қосу">${PLUS}</button><button class="icon-btn" data-act="imenu" data-v="c:${c.id}" aria-label="Әрекеттер">${DOTS}</button>`)}
-    <h1>${esc(c.name)}</h1><p class="hint">${c.lectures.length} сабақ · ${Math.round(cpct(c)*100)}% оқылды</p></header>
-  ${c.lectures.length?`<div class="box sortable">${c.lectures.map(L=>{const key='l:'+L.id,doc=isDoc(L);
-    const prog=L.done?'<span class="ok">✓ Оқылды</span>':`<span class="pct">${doc?`${L.seen||0}/${L.units} ${L.kind==='pdf'||L.kind==='img'?'бет':'бөлім'}`:`${Math.min(L.pos||0,parts(L))}/${parts(L)}`}</span>`;
-    return `<div class="item" data-key="${key}"><button class="row-main lec-main" data-act="lec" data-c="${c.id}" data-v="${L.id}"><span class="txt"><span class="lec-top"><span class="c-f">${L.pinned?'<i class="pin">'+ICON.pin+'</i>':''}${esc(L.title)}</span>${prog}</span>${segs(L)}<span class="meta"><span class="kind">${L.pack?'Сабақ':KIND[L.kind]||'Мәтін'}</span>${L.ex?'<span class="ex">мысал</span>':''}</span></span></button><button class="more" data-act="imenu" data-v="${key}" aria-label="Әрекеттер">${DOTS}</button><span class="grip" aria-label="Ретін өзгерту">${GRIP}</span></div>`}).join('')}</div>`
-  :`<div class="empty-box"><p>Сабақ жоқ. PDF, Word, фото немесе мәтін қос.</p><button class="btn" data-act="addmat">${PLUS} Материал қосу</button></div>`}`;
+    `<button class="icon-btn" data-act="cplus" aria-label="Қосу">${PLUS}</button><button class="icon-btn" data-act="imenu" data-v="c:${c.id}" aria-label="Әрекеттер">${DOTS}</button>`)}
+    <h1>${c.emoji?esc(c.emoji)+' ':''}${esc(c.name)}</h1><p class="hint">${c.lectures.length} сабақ · ${Math.round(cpct(c)*100)}% оқылды</p></header>
+  ${pinned.length?`<section class="section"><div class="section-h"><h2>Бекітілген</h2></div><div class="box">${pinned.map(L=>lecRow(c,L,false)).join('')}</div></section>`:''}
+  ${gsec?`<section class="section">${gsec}</section>`:''}
+  ${loose.length?`<section class="section">${pinned.length||gsec?'<div class="section-h"><h2>Сабақтар</h2></div>':''}<div class="box sortable">${loose.map(L=>lecRow(c,L,true)).join('')}</div></section>`:''}
+  ${!c.lectures.length&&!groups.length?`<div class="empty-box"><p>Сабақ жоқ. PDF, Word, фото немесе мәтін қос.</p><button class="btn" data-act="addmat">${PLUS} Материал қосу</button></div>`:''}`;
 }
 function materialSheet(){
   openSheet('Материал қосу',`<form id="ladd" class="sheet-form">
@@ -735,18 +760,25 @@ function render(){
 
 /* ---------- overlay ---------- */
 const ov=$('#overlay');let cleanups=[],wake=null,LV=null,modeCleanup=null;
-function openOverlay(title){
-  startAct();ov.hidden=false;document.documentElement.classList.add('locked');
-  ov.innerHTML=`<div class="ov-in"><div class="ov-head"><p class="eyebrow">${title}</p><span class="clock" id="oclock">0:00</span><button class="btn" data-act="close">Жабу</button></div><div id="obody" style="display:flex;flex-direction:column;gap:14px;flex:1"></div></div>`;
+function openOverlay(title,opts){
+  opts=opts||{};startAct();ov.hidden=false;ov.classList.add('reader');document.documentElement.classList.add('locked');
+  ov.innerHTML=`<div class="ov-in"><div class="pull-hint"></div><div class="ov-head"><p class="eyebrow">${title}</p>${opts.noClose?'':'<button class="icon-btn sm" data-act="close" aria-label="Жабу">✕</button>'}</div><div id="obody" style="display:flex;flex-direction:column;gap:14px;flex:1"></div></div>`;
   try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(w=>wake=w).catch(()=>{})}catch(e){}
-  const t0=Date.now(),iv=setInterval(()=>{const c=$('#oclock');if(c)c.textContent=fmt((Date.now()-t0)/1000)},500);cleanups.push(()=>clearInterval(iv));
   ov.scrollTop=0;return $('#obody');
 }
+/* pull down at the top of a reader to close it */
+(function(){let y0=null,dy=0;
+  ov.addEventListener('touchstart',e=>{if(!ov.classList.contains('reader')||ov.scrollTop>2||e.touches.length>1){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
+  ov.addEventListener('touchmove',e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;const inn=ov.firstElementChild;if(!inn)return;if(dy>0&&ov.scrollTop<=0){inn.style.transform=`translateY(${Math.min(dy*.45,140)}px)`;inn.style.opacity=String(Math.max(.4,1-dy/500))}},{passive:true});
+  ov.addEventListener('touchend',()=>{if(y0===null)return;const inn=ov.firstElementChild;if(dy>110&&ov.scrollTop<=0){closeOverlay()}else if(inn){inn.style.transition='transform .2s,opacity .2s';inn.style.transform='';inn.style.opacity='';setTimeout(()=>{if(inn)inn.style.transition=''},220)}y0=null});
+})();
+document.addEventListener('keydown',e=>{if(ov.hidden||noteOpen||SHEET)return;if(e.target.closest&&e.target.closest('input,textarea'))return;
+  if(e.key==='Escape')closeOverlay();else if(e.key==='ArrowRight'&&LV&&LV.next)LV.next();else if(e.key==='ArrowLeft'&&LV&&LV.back)LV.back()});
 function closeOverlay(){
   cleanups.forEach(f=>{try{f()}catch(e){}});cleanups=[];
   if(modeCleanup){modeCleanup();modeCleanup=null}
   try{wake&&wake.release()}catch(e){}wake=null;
-  stopAct();ov.hidden=true;ov.innerHTML='';document.documentElement.classList.remove('locked');render();
+  stopAct();ov.hidden=true;ov.classList.remove('reader');ov.innerHTML='';document.documentElement.classList.remove('locked');render();
 }
 
 /* ---------- lecture viewer ---------- */
@@ -822,31 +854,37 @@ function docView(el,c,L){
   build();
   return()=>{alive=false;ov.removeEventListener('scroll',onScroll);if(obs)obs.disconnect();clearTimeout(saveT);save();urls.forEach(u=>URL.revokeObjectURL(u));try{pdf&&pdf.destroy()}catch(e){}LV=null};
 }
-/* lesson packs: 5-minute parts */
+/* lesson packs: 5-minute parts — tap right edge = next, left edge = back (on part 1: close) */
 function partView(el,c,L){
-  let alive=true;
-  el.innerHTML=`<div class="lv">
-    <div class="lv-h"><p class="c-f" style="margin:0">${esc(L.title)}</p><div class="meta"><span id="lvp"></span></div><div id="lvsegs">${segs(L)}</div></div>
-    <div id="lvc" class="lv-c"></div><div id="lvcard"></div>
-    <div class="lv-nav" id="lvnav"><button class="btn" data-act="lvprev" aria-label="Алдыңғы бөлік">←</button><button class="btn" data-act="lvcard">+ Карточка</button><button class="btn primary" data-act="lvnext">Келесі →</button></div></div>`;
+  el.innerHTML=`<div class="lv tapzone">
+    <div class="lv-h"><div class="lec-top"><p class="c-f" style="margin:0">${esc(L.title)}</p><button class="chip sm" data-act="lvcard">+ Карточка</button></div><div class="meta"><span id="lvp"></span></div><div id="lvsegs">${segs(L)}</div></div>
+    <div id="lvcard"></div><div id="lvc" class="lv-c"></div>
+    <div class="edge-hint"><span>‹</span><span>›</span></div></div>`;
   const box=el.querySelector('#lvc');
   function draw(){
     const g=el.querySelector('#lvsegs');if(g)g.innerHTML=segs(L);const p=el.querySelector('#lvp');if(p)p.textContent=L.done?'оқылды':'бөлік '+(L.pos+1)+' / '+parts(L);
-    const nav=el.querySelector('#lvnav');
-    if(L.pos>=parts(L)){nav.hidden=true;const nx=c.lectures.find(l=>!l.done&&l.id!==L.id);
-      box.innerHTML=`<div class="empty"><p class="big">Сабақ оқылды</p><p>${esc(L.title)}</p><div class="row" style="justify-content:center">${nx?`<button class="btn primary" data-act="lvgo" data-v="${nx.id}">Келесі: ${esc(nx.title)}</button>`:''}<button class="btn" data-act="lvreset">Басынан оқу</button></div></div>`;return}
-    nav.hidden=false;const ch=L.inline||[];box.innerHTML='<div class="prose">'+sanitize(ch.slice(L.pos*L.per,L.pos*L.per+L.per).join(''))+'</div>';enhanceChecks(box);ov.scrollTop=0;
+    if(L.pos>=parts(L)){const nx=c.lectures.find(l=>!l.done&&l.id!==L.id);
+      box.innerHTML=`<div class="empty"><p class="big">Сабақ оқылды ✓</p><p>${esc(L.title)}</p><div class="row" style="justify-content:center">${nx?`<button class="btn primary" data-act="lvgo" data-v="${nx.id}">Келесі: ${esc(nx.title)}</button>`:''}<button class="btn" data-act="lvreset">Басынан оқу</button><button class="btn ghost" data-act="close">Жабу</button></div></div>`;return}
+    const ch=L.inline||[];box.innerHTML='<div class="prose">'+sanitize(ch.slice(L.pos*L.per,L.pos*L.per+L.per).join(''))+'</div>';enhanceChecks(box);ov.scrollTop=0;
   }
-  LV={next(){L.pos=Math.min(parts(L),L.pos+1);L.done=L.pos>=parts(L);save();el.querySelector('#lvcard').innerHTML='';draw()},
+  const onTap=e=>{
+    if(e.target.closest('button,a,input,textarea,select,label,summary,form,.check,.lv-h'))return;
+    if(window.getSelection&&String(window.getSelection()).length)return;
+    const x=e.clientX/innerWidth;if(x<.33)LV.back();else if(x>.67)LV.next();
+  };
+  el.addEventListener('click',onTap);
+  LV={next(){if(L.pos>=parts(L)){const nx=c.lectures.find(l=>!l.done&&l.id!==L.id);if(nx)LV.go(nx.id);else closeOverlay();return}
+      L.pos=Math.min(parts(L),L.pos+1);L.done=L.pos>=parts(L);save();el.querySelector('#lvcard').innerHTML='';draw()},
+    back(){if(L.pos<=0&&!L.done){closeOverlay();return}LV.prev()},
     prev(){if(L.done){L.done=false;L.pos=parts(L)-1}else if(L.pos>0)L.pos--;save();draw()},
     reset(){L.pos=0;L.done=false;save();draw()},
     go(id){if(modeCleanup)modeCleanup();modeCleanup=lectureView(el,c.id,id)},
     card(){const w=el.querySelector('#lvcard');if(w.innerHTML){w.innerHTML='';return}w.innerHTML=cardForm(c);setTimeout(()=>{const q=$('#lq');q&&q.focus()},30)},
     saveCard(){saveCardFor(c)}};
   draw();
-  return()=>{alive=false;LV=null};
+  try{if(!sessionStorage.getItem('bm.hint')){sessionStorage.setItem('bm.hint','1');el.querySelector('.edge-hint').classList.add('show')}}catch(e){}
+  return()=>{el.removeEventListener('click',onTap);LV=null};
 }
-
 function reviewer(el,list){
   const q=dueOf(list).sort((a,b)=>a.due-b.due);let done=0;
   function show(){
@@ -886,6 +924,7 @@ const ACT={
   rm:(b,v)=>arm(b,()=>{const [t,id]=v.split(':');closePop();
     if(t==='f'){const f=folder(id);S.folders.forEach(x=>{if(x.parent===id)x.parent=f.parent});S.courses.forEach(c=>{if(c.folder===id)c.folder=f.parent});S.folders=S.folders.filter(x=>x.id!==id);if(cur[f.space]===id)cur[f.space]=f.parent;save();render();flash('#pmsg','Папка өшірілді, ішіндегілер бір деңгей жоғары көшті');return}
     if(t==='c'){const c=course(id);const sp=c.space;deleteCourse(c);if(tab==='course'){tab=sp}save();render();return}
+    if(t==='g'){const c=course(curCourse);c.lectures.forEach(L=>{if(L.group===id)delete L.group});c.groups=(c.groups||[]).filter(g=>g.id!==id);save();render();return}
     if(t==='l'){const c=course(curCourse);const L=c.lectures.find(l=>l.id===id);if(L)dropLectureFiles(L);c.lectures=c.lectures.filter(l=>l.id!==id);save();render();return}
     if(t==='n'){S.notes=S.notes.filter(n=>n.id!==id);if(noteOpen===id){noteOpen=null;ov.hidden=true;ov.innerHTML='';document.documentElement.classList.remove('locked')}save();render()}}),
   lreset:(b,v)=>{const L=objOf(v);L.pos=0;L.page=0;L.seen=0;L.done=false;save();closePop();render()},
@@ -893,7 +932,13 @@ const ACT={
   emo:(b,v)=>{const o=objOf(v);openSheet('Иконка',`<div class="emo-grid">${EMOJI.map(e=>`<button data-act="emopick" data-v="${e}" class="${o.emoji===e?'on':''}">${e}</button>`).join('')}</div><form id="emoform" class="inline"><input id="emoin" placeholder="Немесе кез келген эмодзи" maxlength="8" autocomplete="off"><button class="btn primary">Қою</button></form><button class="btn ghost wide" data-act="emopick" data-v="">Иконканы алып тастау</button>`,{key:v,noFocus:true})},
   emopick:(b,v)=>{const o=objOf(sheetCtx.key);if(o){if(v)o.emoji=v;else delete o.emoji;save()}closeSheet();render()},
   theme:(b,v)=>{setTheme(v);render()},
-  lec:b=>{const c=course(b.dataset.c);if(!c)return;const body=openOverlay(esc(c.name));modeCleanup=lectureView(body,c.id,b.dataset.v)},
+  lec:b=>{const c=course(b.dataset.c);if(!c)return;const L=c.lectures.find(l=>l.id===b.dataset.v);const body=openOverlay(esc(c.name),{noClose:L&&!isDoc(L)});modeCleanup=lectureView(body,c.id,b.dataset.v)},
+  cplus:b=>openPop(b,`<button data-act="addmat">${PLUS} Материал қосу</button><button data-act="newg">${ICON.folder} Жаңа папка</button>`),
+  newg:()=>nameSheet('Жаңа папка (курс ішінде)','',{op:'newg'},'Мысалы: 1-модуль'),
+  gtoggle:(b,v)=>{if(openGroups.has(v))openGroups.delete(v);else openGroups.add(v);render()},
+  lmv:(b,v)=>{const c=course(curCourse),L=objOf(v),gs=c.groups||[];
+    openSheet('Қай папкаға',`<div class="mvlist"><button class="mv${!L.group?' on':''}" data-act="lmvto" data-v="">${ICON.folder}<span>Папкасыз</span></button>${gs.map(g=>`<button class="mv${L.group===g.id?' on':''}" data-act="lmvto" data-v="${g.id}">${ICON.folder}<span>${esc(g.name)}</span></button>`).join('')}</div><button class="btn wide" data-act="newg">${PLUS} Жаңа папка</button>`,{key:v,noFocus:true})},
+  lmvto:(b,v)=>{const L=objOf(sheetCtx.key);if(L){if(v){L.group=v;openGroups.add(v)}else delete L.group;save()}closeSheet();render()},
   lvnext:()=>LV&&LV.next&&LV.next(), lvprev:()=>LV&&LV.prev&&LV.prev(), lvzoom:()=>LV&&LV.zoom&&LV.zoom(), lvreset:()=>LV&&LV.reset(), lvcard:()=>LV&&LV.card(), lvgo:(b,v)=>LV&&LV.go&&LV.go(v),
   cgo:(b,v)=>{cardsAt=v?{space:b.dataset.s,fid:v}:{space:null,fid:null};render();window.scrollTo(0,0)},
   review:(b,v)=>{const body=openOverlay('Карточкалар');reviewer(body,cardsFor(v))},
@@ -930,16 +975,20 @@ async function importPacks(files){
   }catch(e){render();const m=$('#pmsg');if(m)m.textContent='Қате: '+(e&&e.message||e)}
 }
 /* auto-sync lesson packs published next to the app (GitHub Pages) */
+function removeLids(pid,lids){const c=S.courses.find(x=>x.pid===pid);if(!c||!lids.length)return;c.lectures=c.lectures.filter(l=>!lids.includes(l.lid));if(!c.lectures.length)deleteCourse(c)}
 async function syncPacks(){
   if(location.protocol!=='https:'||/claude/.test(location.hostname))return;
   try{
     const r=await fetch('courses/index.json',{cache:'no-store'});if(!r.ok)return;const idx=await r.json();
-    S.synced=S.synced||{};const cnt={nl:0,nc:0};let changed=false;
+    S.synced=S.synced||{};const cnt={nl:0,nc:0};let changed=false;const live=new Set((idx.packs||[]).map(p=>p.path));
+    for(const path of Object.keys(S.synced)){if(!live.has(path)){const inf=S.synced[path];if(inf&&inf.lids)removeLids(inf.pid,inf.lids);delete S.synced[path];changed=true}}
     for(const it of idx.packs||[]){
-      if(S.synced[it.path]===it.v)continue;
+      const prev=S.synced[it.path],pv=typeof prev==='string'?prev:prev&&prev.v;if(pv===it.v)continue;
       const pr=await fetch(it.path,{cache:'no-store'});if(!pr.ok)continue;const o=await pr.json();
       if(!o||o.format!=='besminut-pack'||!o.course||!Array.isArray(o.lectures))continue;
-      const sp=o.course.space==='skills'?'skills':'courses';mergePack(o,sp,null,cnt);S.synced[it.path]=it.v;changed=true;
+      const sp=o.course.space==='skills'?'skills':'courses';mergePack(o,sp,null,cnt);
+      const lids=o.lectures.map(x=>x.id);if(prev&&prev.lids)removeLids(o.course.id,prev.lids.filter(l=>!lids.includes(l)));
+      S.synced[it.path]={v:it.v,lids,pid:o.course.id};changed=true;
     }
     if(changed){save();if(!noteOpen&&ov.hidden)render();toast(cnt.nl?`Жаңа сабақтар келді: ${cnt.nl}`:'Сабақтар жаңартылды')}
   }catch(e){}
@@ -969,7 +1018,7 @@ document.addEventListener('pointerdown',e=>{
     rows.forEach((r,i)=>{if(r===row)return;let s=0;if(idx<ni&&i>idx&&i<=ni)s=-h;if(idx>ni&&i<idx&&i>=ni)s=h;r.style.transform=s?`translateY(${s}px)`:''})};
   const up=()=>{g.removeEventListener('pointermove',mv);g.removeEventListener('pointerup',up);g.removeEventListener('pointercancel',up);
     const keys=rows.map(r=>r.dataset.key);const [k]=keys.splice(idx,1);keys.splice(ni,0,k);
-    if(keys[0][0]==='l'){const c=course(curCourse);c.lectures=keys.map(x=>c.lectures.find(l=>'l:'+l.id===x)).filter(Boolean)}
+    if(keys[0][0]==='l'){const c=course(curCourse);const set=keys.map(x=>c.lectures.find(l=>'l:'+l.id===x));const pos=c.lectures.map((l,i)=>keys.includes('l:'+l.id)?i:-1).filter(i=>i>=0);pos.forEach((q,n)=>{if(set[n])c.lectures[q]=set[n]})}
     else keys.forEach((x,i)=>{const o=objOf(x);if(o)o.ord=i});
     save();render()};
   g.addEventListener('pointermove',mv);g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up);
@@ -983,6 +1032,7 @@ document.addEventListener('submit',e=>{
   e.preventDefault();const id=e.target.id,sp=curSpace();
   if(id==='sform'){const v=$('#si').value.trim(),ctx=sheetCtx||{};if(!v){$('#si').focus();return}
     if(ctx.op==='newf'){const pid=cur[sp];S.folders.push({id:uid(),name:v,space:sp,parent:pid,ord:nextOrd(sp,pid)})}
+    if(ctx.op==='newg'){const c=course(curCourse);c.groups=c.groups||[];const g={id:uid(),name:v};c.groups.push(g);openGroups.add(g.id);const lk=ctx.lk||null;}
     if(ctx.op==='newc'){const pid=cur[sp];const c={id:uid(),name:v,space:sp,folder:pid,lectures:[],ord:nextOrd(sp,pid)};S.courses.push(c);curCourse=c.id;tab='course'}
     if(ctx.op==='ren'){const o=objOf(ctx.key);if(o){if(ctx.key[0]==='l')o.title=v;else o.name=v}}
     closeSheet();save();render()}
