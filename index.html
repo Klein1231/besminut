@@ -431,6 +431,11 @@ details.backup summary{font-family:var(--f-body);font-size:15px;text-transform:n
 .pull-hint{height:4px;width:40px;border-radius:2px;background:var(--line);margin:0 auto -6px}
 .lv-h .lec-top{align-items:flex-start}
 .lv-h .c-f{overflow-wrap:normal;word-break:normal;font-size:19px}
+#overlay.reader{will-change:transform}
+#overlay.enter{animation:ovIn .3s cubic-bezier(.2,.8,.3,1)}
+@keyframes ovIn{from{transform:translateY(40%);opacity:.2}to{transform:none;opacity:1}}
+#overlay.dragged,#overlay[data-closing]{border-radius:22px 22px 0 0;box-shadow:0 -12px 40px -8px rgba(0,0,0,.35)}
+body.peek #app,body.peek #tabs{filter:brightness(.92)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -761,19 +766,29 @@ function render(){
 /* ---------- overlay ---------- */
 const ov=$('#overlay');let cleanups=[],wake=null,LV=null,modeCleanup=null;
 function openOverlay(title,opts){
-  opts=opts||{};startAct();ov.hidden=false;ov.classList.add('reader');document.documentElement.classList.add('locked');
+  opts=opts||{};startAct();ov.hidden=false;ov.classList.add('reader');ov.classList.remove('enter');void ov.offsetWidth;ov.classList.add('enter');document.documentElement.classList.add('locked');
   ov.innerHTML=`<div class="ov-in"><div class="pull-hint"></div><div class="ov-head"><p class="eyebrow">${title}</p>${opts.noClose?'':'<button class="icon-btn sm" data-act="close" aria-label="Жабу">✕</button>'}</div><div id="obody" style="display:flex;flex-direction:column;gap:14px;flex:1"></div></div>`;
   try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(w=>wake=w).catch(()=>{})}catch(e){}
   ov.scrollTop=0;return $('#obody');
 }
-/* pull down at the top of a reader to close it */
-(function(){let y0=null,dy=0;
-  ov.addEventListener('touchstart',e=>{if(!ov.classList.contains('reader')||ov.scrollTop>2||e.touches.length>1){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
-  ov.addEventListener('touchmove',e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;const inn=ov.firstElementChild;if(!inn)return;if(dy>0&&ov.scrollTop<=0){inn.style.transform=`translateY(${Math.min(dy*.45,140)}px)`;inn.style.opacity=String(Math.max(.4,1-dy/500))}},{passive:true});
-  ov.addEventListener('touchend',()=>{if(y0===null)return;const inn=ov.firstElementChild;if(dy>110&&ov.scrollTop<=0){closeOverlay()}else if(inn){inn.style.transition='transform .2s,opacity .2s';inn.style.transform='';inn.style.opacity='';setTimeout(()=>{if(inn)inn.style.transition=''},220)}y0=null});
+/* pull down at the top of a reader: the page follows the finger, the screen below shows through */
+function slideClose(){
+  if(ov.hidden||ov.dataset.closing)return;ov.dataset.closing='1';
+  ov.style.transition='transform .28s cubic-bezier(.3,.7,.4,1),box-shadow .28s';ov.style.transform='translateY(100%)';
+  document.body.classList.add('peek');
+  setTimeout(()=>{ov.style.transition='';ov.style.transform='';delete ov.dataset.closing;document.body.classList.remove('peek');closeOverlay()},290);
+}
+(function(){let y0=null,dy=0,t0=0,active=false;
+  const reset=()=>{ov.style.transition='transform .25s cubic-bezier(.3,.7,.4,1)';ov.style.transform='';setTimeout(()=>{ov.style.transition='';ov.classList.remove('dragged');document.body.classList.remove('peek')},260)};
+  ov.addEventListener('touchstart',e=>{if(!ov.classList.contains('reader')||ov.scrollTop>2||e.touches.length>1){y0=null;return}y0=e.touches[0].clientY;dy=0;t0=Date.now();active=false},{passive:true});
+  ov.addEventListener('touchmove',e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;
+    if(!active){if(dy>6&&ov.scrollTop<=0){active=true;ov.classList.add('dragged');document.body.classList.add('peek')}else if(dy<-6){y0=null;return}}
+    if(active){e.preventDefault();ov.style.transform=`translateY(${Math.max(0,dy)}px)`}},{passive:false});
+  ov.addEventListener('touchend',()=>{if(y0===null)return;y0=null;if(!active)return;const v=dy/Math.max(1,Date.now()-t0);
+    if(dy>innerHeight*.25||(v>.6&&dy>60))slideClose();else reset()});
 })();
 document.addEventListener('keydown',e=>{if(ov.hidden||noteOpen||SHEET)return;if(e.target.closest&&e.target.closest('input,textarea'))return;
-  if(e.key==='Escape')closeOverlay();else if(e.key==='ArrowRight'&&LV&&LV.next)LV.next();else if(e.key==='ArrowLeft'&&LV&&LV.back)LV.back()});
+  if(e.key==='Escape')slideClose();else if(e.key==='ArrowRight'&&LV&&LV.next)LV.next();else if(e.key==='ArrowLeft'&&LV&&LV.back)LV.back()});
 function closeOverlay(){
   cleanups.forEach(f=>{try{f()}catch(e){}});cleanups=[];
   if(modeCleanup){modeCleanup();modeCleanup=null}
@@ -873,9 +888,9 @@ function partView(el,c,L){
     const x=e.clientX/innerWidth;if(x<.33)LV.back();else if(x>.67)LV.next();
   };
   el.addEventListener('click',onTap);
-  LV={next(){if(L.pos>=parts(L)){const nx=c.lectures.find(l=>!l.done&&l.id!==L.id);if(nx)LV.go(nx.id);else closeOverlay();return}
+  LV={next(){if(L.pos>=parts(L)){const nx=c.lectures.find(l=>!l.done&&l.id!==L.id);if(nx)LV.go(nx.id);else slideClose();return}
       L.pos=Math.min(parts(L),L.pos+1);L.done=L.pos>=parts(L);save();el.querySelector('#lvcard').innerHTML='';draw()},
-    back(){if(L.pos<=0&&!L.done){closeOverlay();return}LV.prev()},
+    back(){if(L.pos<=0&&!L.done){slideClose();return}LV.prev()},
     prev(){if(L.done){L.done=false;L.pos=parts(L)-1}else if(L.pos>0)L.pos--;save();draw()},
     reset(){L.pos=0;L.done=false;save();draw()},
     go(id){if(modeCleanup)modeCleanup();modeCleanup=lectureView(el,c.id,id)},
@@ -907,7 +922,7 @@ function deleteCourse(c){c.lectures.forEach(dropLectureFiles);S.cards=S.cards.fi
 function curSpace(){return tab==='skills'?'skills':'courses'}
 
 const ACT={
-  close:()=>closeOverlay(),
+  close:()=>slideClose(),
   sclose:()=>closeSheet(),
   tab:(b,v)=>{if(noteOpen)closeNote();tab=v;if(v==='cards')cardsAt={space:null,fid:null};render();window.scrollTo(0,0)},
   open:(b,v)=>{const sp=b.dataset.s||curSpace();tab=sp;cur[sp]=v||null;render();window.scrollTo(0,0)},
