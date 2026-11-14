@@ -1,6 +1,14 @@
 {
  "packs": [
   {
+   "path": "courses/building-automation/01-water.json",
+   "v": "62493b7c0f7f"
+  },
+  {
+   "path": "courses/building-automation/02-power.json",
+   "v": "355b7b0e0ec9"
+  },
+  {
    "path": "courses/microprocessors/01-history.json",
    "v": "72886782bbb1"
   },
