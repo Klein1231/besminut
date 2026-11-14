@@ -19,6 +19,10 @@
   {
    "path": "courses/microprocessors/02-structure.json",
    "v": "778f943b830a"
+  },
+  {
+   "path": "courses/microprocessors/03-data-types.json",
+   "v": "007600f12c15"
   }
  ]
 }
