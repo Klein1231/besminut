@@ -437,6 +437,24 @@ details.backup summary{font-family:var(--f-body);font-size:15px;text-transform:n
 #overlay.dragged,#overlay[data-closing]{border-radius:22px 22px 0 0;box-shadow:0 -12px 40px -8px rgba(0,0,0,.35)}
 body.peek #app,body.peek #tabs{filter:brightness(calc(1 - var(--peek,1)*.1));transition:filter .1s}
 #overlay.dragged{transform-origin:50% 0}
+.cnt{font-size:12px;color:var(--muted);padding:0 4px;white-space:nowrap}
+.cnt.due{min-width:28px;height:24px;border-radius:12px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:700;padding:0 8px}
+.cnt.mute{opacity:.7}
+.chev{display:grid;place-items:center;width:30px;font-size:22px;color:var(--muted)}
+.chips.wrap{flex-wrap:wrap;overflow:visible}
+.chips .chip b{font-weight:600;opacity:.7;margin-left:2px}
+.h-sm{font-size:26px}
+.card-row{grid-template-columns:1fr}
+.card-row .c-b{color:var(--ink);background:var(--accent-soft);border-radius:10px;padding:8px 10px;font-size:15px}
+.stag{border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600}
+.st-new{--sc:var(--muted)} .st-no{--sc:var(--bad)} .st-hard{--sc:var(--warn)} .st-ok{--sc:var(--good)}
+.stag.st-new{background:var(--sunk);color:var(--muted)}
+.stag.st-no{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.stag.st-hard{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.stag.st-ok{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good)}
+.chip.st-no[aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:#fff}
+.chip.st-hard[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#fff}
+.chip.st-ok[aria-pressed="true"]{background:var(--good);border-color:var(--good);color:#fff}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -606,11 +624,12 @@ function closeSheet(){if(SHEET){SHEET.remove();SHEET=null;sheetCtx=null}}
 function nameSheet(title,val,ctx,ph){openSheet(title,`<form id="sform" class="sheet-form"><input id="si" value="${esc(val||'')}" placeholder="${esc(ph||'Атауы')}" maxlength="80" autocomplete="off"><button class="btn primary wide">Сақтау</button></form>`,ctx)}
 
 /* ---------- object helpers ---------- */
-function objOf(key){const [t,id]=key.split(':');if(t==='f')return folder(id);if(t==='c')return course(id);if(t==='n')return S.notes.find(n=>n.id===id);if(t==='l'){const c=course(curCourse);return c&&c.lectures.find(l=>l.id===id)}if(t==='g'){const c=course(curCourse);return c&&(c.groups||[]).find(g=>g.id===id)}}
+function objOf(key){const [t,id]=key.split(':');if(t==='f')return folder(id);if(t==='c')return course(id);if(t==='n')return S.notes.find(n=>n.id===id);if(t==='k')return S.cards.find(k=>k.id===id);if(t==='l'){const c=course(curCourse);return c&&c.lectures.find(l=>l.id===id)}if(t==='g'){const c=course(curCourse);return c&&(c.groups||[]).find(g=>g.id===id)}}
 function itemMenu(key){
   const t=key[0],o=objOf(key);if(!o)return '';
   const pin=`<button data-act="pin" data-v="${key}">${o.pinned?'Бекітуден алу':'Бекіту'}</button>`;
   if(t==='n')return pin+`<hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
+  if(t==='k')return `<button data-act="cedit" data-v="${key}">Өзгерту</button><button data-act="creset" data-v="${key}">Жаңа деп белгілеу</button><hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
   if(t==='g')return `<button data-act="ren" data-v="${key}">Атын өзгерту</button><hr><button class="danger" data-act="rm" data-v="${key}">Папканы өшіру</button>`;
   if(t==='l')return pin+`<button data-act="lmv" data-v="${key}">Папкаға жылжыту…</button><button data-act="lreset" data-v="${key}">Басынан оқу</button><button data-act="ren" data-v="${key}">Атын өзгерту</button><hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
   return pin+`<button data-act="emo" data-v="${key}">Иконка таңдау</button><button data-act="ren" data-v="${key}">Атын өзгерту</button><button data-act="mvsheet" data-v="${key}">Жылжыту…</button><hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
@@ -677,32 +696,75 @@ function materialSheet(){
     <button class="btn primary wide" id="lbtn">Қосу</button><p class="msg" id="lmsg"></p></form>`);
 }
 
-/* ---------- cards ---------- */
+/* ---------- cards: browse like folders → course → lesson → cards ---------- */
+const CST={new:{t:'Жаңа',c:'st-new'},0:{t:'Білмеймін',c:'st-no'},1:{t:'Қиын',c:'st-hard'},2:{t:'Білемін',c:'st-ok'}};
+const cstat=k=>k.last===undefined||k.last===null?'new':String(k.last);
+let cardFilter='all';
+const FILTERS=[['all','Барлығы'],['due','Бүгін'],['new','Жаңа'],['0','Білмеймін'],['1','Қиын'],['2','Білемін']];
+function applyFilter(list,f){if(f==='all')return list;if(f==='due')return dueOf(list);return list.filter(k=>cstat(k)===f)}
+const RANK={'0':0,'1':1,'new':2,'2':3};
+const byHard=(a,b)=>RANK[cstat(a)]-RANK[cstat(b)]||(a.due||0)-(b.due||0);
+function lecOf(k){const c=course(k.cid);return c&&k.lec?c.lectures.find(l=>l.id===k.lec):null}
+function scopeCards(){const {cid,lec}=cardsAt;if(!cid)return[];const all=S.cards.filter(k=>k.cid===cid);
+  if(lec==='all')return all;if(lec==='none')return all.filter(k=>!lecOf(k));return all.filter(k=>k.lec===lec)}
+function badge(list){const d=dueOf(list).length,n=list.filter(k=>cstat(k)==='new').length;return d?`<span class="cnt due">${d}</span>`:n?`<span class="cnt">${n} жаңа</span>`:`<span class="cnt mute">${list.length}</span>`}
+function cardRowF(space,f){const all=cardsUnder(space,f.id);
+  return `<div class="item"><button class="row-main" data-act="cgo" data-v="${f.id}" data-s="${space}">${fico(f)}<span class="txt"><span class="c-f">${esc(f.name)}</span><span class="meta">${all.length} карточка</span></span></button>${badge(all)}<span class="chev">›</span></div>`}
+function cardRowC(c){const all=S.cards.filter(k=>k.cid===c.id);
+  return `<div class="item"><button class="row-main" data-act="copen" data-v="${c.id}">${cico(c)}<span class="txt"><span class="c-f">${esc(c.name)}</span><span class="meta">${all.length} карточка</span></span></button>${badge(all)}<span class="chev">›</span></div>`}
+function crumbsCards(){const {space,fid,cid,lec}=cardsAt;const bits=[`<button data-act="cgo" data-v="">Карточкалар</button>`];
+  const fpath=cid?(course(cid)&&course(cid).folder?pathOf(course(cid).folder):[]):(fid?pathOf(fid).slice(0,-1):[]);
+  fpath.forEach(p=>bits.push(`<span>/</span><button data-act="cgo" data-v="${p.id}" data-s="${p.space}">${esc(p.name)}</button>`));
+  if(cid&&lec)bits.push(`<span>/</span><button data-act="copen" data-v="${cid}">${esc(course(cid).name)}</button>`);
+  return `<nav class="crumbs">${bits.join('')}</nav>`}
 function vCards(){
-  const {space,fid}=cardsAt;
+  const {space,fid,cid,lec}=cardsAt;
+  if(cid&&lec)return vCardList();
+  if(cid)return vCardCourse();
   if(!space){
     const loose=S.cards.filter(k=>!k.cid||!course(k.cid));
-    const sec=sp=>{const rows=mixed(sp,null).map(x=>x.k[0]==='f'?cardRowF(sp,x.o):cardRowC(x.o)).join('');return rows?`<section class="section"><div class="section-h"><h2>${SPACE[sp].title}</h2><span>${dueOf(cardsUnder(sp,null)).length} күтіп тұр</span></div><div class="box">${rows}</div></section>`:''};
+    const sec=sp=>{const rows=mixed(sp,null).map(x=>x.k[0]==='f'?cardRowF(sp,x.o):cardRowC(x.o)).join('');return rows?`<section class="section"><div class="section-h"><h2>${SPACE[sp].title}</h2><span>${dueOf(cardsUnder(sp,null)).length} бүгін</span></div><div class="box">${rows}</div></section>`:''};
+    const body=sec('courses')+sec('skills');
     return `<header class="top">${topBar('<p class="label">Қайталау</p>')}<h1>Карточкалар</h1></header>
-    ${sec('courses')}${sec('skills')}
-    ${loose.length?`<section class="section"><div class="box"><div class="item"><div class="row-main"><span class="ico f">${ICON.folder}</span><span class="txt"><span class="c-f">Басқа карточкалар</span><span class="meta">${loose.length} карточка</span></span></div>${dueOf(loose).length?`<button class="due-btn" data-act="review" data-v="loose">${dueOf(loose).length}</button>`:'<span></span>'}</div></div></section>`:''}
-    <p class="hint">Қайталау үшін папканың не курстың жанындағы санды бас. Карточкалар сабақ оқығанда «+ Карточка» арқылы қосылады.</p>`;
+    ${body||'<div class="empty-box"><p>Карточка жоқ. Сабақ оқып отырып «+ Карточка» бас.</p></div>'}
+    ${loose.length?`<section class="section"><div class="box"><div class="item"><button class="row-main" data-act="copen" data-v="__loose"><span class="ico f">${ICON.folder}</span><span class="txt"><span class="c-f">Басқа карточкалар</span><span class="meta">${loose.length} карточка</span></span></button>${badge(loose)}<span class="chev">›</span></div></div></section>`:''}`;
   }
-  const f=folder(fid);const d=dueOf(cardsUnder(space,fid)).length;
-  return `<header class="top">${topBar(`<nav class="crumbs"><button data-act="cgo" data-v="">Карточкалар</button>${pathOf(fid).slice(0,-1).map(p=>`<span>/</span><button data-act="cgo" data-v="${p.id}" data-s="${space}">${esc(p.name)}</button>`).join('')}</nav>`)}<h1>${esc(f.name)}</h1></header>
-  ${d?`<button class="btn primary wide" data-act="review" data-v="f:${space}:${fid}">Осы папканы қайталау · ${d}</button>`:''}
+  const f=folder(fid);
+  return `<header class="top">${topBar(crumbsCards())}<h1>${esc(f.name)}</h1></header>
   <div class="box">${mixed(space,fid).map(x=>x.k[0]==='f'?cardRowF(space,x.o):cardRowC(x.o)).join('')||'<p class="hint" style="padding:14px 16px;margin:0">Бос.</p>'}</div>`;
 }
-function cardRowF(space,f){const all=cardsUnder(space,f.id),d=dueOf(all).length;
-  return `<div class="item"><button class="row-main" data-act="cgo" data-v="${f.id}" data-s="${space}">${fico(f)}<span class="txt"><span class="c-f">${esc(f.name)}</span><span class="meta">${all.length} карточка</span></span></button>${d?`<button class="due-btn" data-act="review" data-v="f:${space}:${f.id}">${d}</button>`:'<span></span>'}</div>`}
-function cardRowC(c){const all=S.cards.filter(k=>k.cid===c.id),d=dueOf(all).length;
-  return `<div class="item"><div class="row-main">${cico(c)}<span class="txt"><span class="c-f">${esc(c.name)}</span><span class="meta">${all.length} карточка${all.length&&!d?' · бүгін бәрі қайталанған':''}</span></span></div>${d?`<button class="due-btn" data-act="review" data-v="c:${c.id}">${d}</button>`:'<span></span>'}</div>`}
-function cardsFor(v){
-  if(v==='loose')return S.cards.filter(k=>!k.cid||!course(k.cid));
-  if(v.startsWith('c:'))return S.cards.filter(k=>k.cid===v.slice(2));
-  const [,sp,fid]=v.split(':');return cardsUnder(sp,fid);
+function vCardCourse(){
+  const c=course(cardsAt.cid);if(!c){cardsAt={space:null,fid:null};return vCards()}
+  const all=S.cards.filter(k=>k.cid===c.id);
+  const lecs=c.lectures.map(L=>({L,ks:all.filter(k=>k.lec===L.id)})).filter(x=>x.ks.length);
+  const none=all.filter(k=>!lecOf(k));
+  const row=(v,title,ks,ico)=>`<div class="item"><button class="row-main" data-act="clopen" data-v="${v}">${ico}<span class="txt"><span class="c-f">${title}</span><span class="meta">${ks.length} карточка · ${ks.filter(k=>cstat(k)==='new').length} жаңа</span></span></button>${badge(ks)}<span class="chev">›</span></div>`;
+  const LIC='<span class="ico f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="13" height="15" rx="2"/><path d="M8 2h11a1 1 0 0 1 1 1v14"/></svg></span>';
+  return `<header class="top">${topBar(crumbsCards(),`<button class="icon-btn" data-act="cadd" aria-label="Карточка қосу">${PLUS}</button>`)}<h1>${c.emoji?esc(c.emoji)+' ':''}${esc(c.name)}</h1><p class="hint">${all.length} карточка · бүгін ${dueOf(all).length}</p></header>
+  ${all.length?`<div class="box">${row('all','Барлық карточкалар',all,`<span class="ico">∑</span>`)}</div>`:''}
+  ${lecs.length||none.length?`<section class="section"><div class="section-h"><h2>Сабақтар бойынша</h2></div><div class="box">${lecs.map(x=>row(x.L.id,esc(x.L.title),x.ks,LIC)).join('')}${none.length?row('none','Сабақсыз',none,LIC):''}</div></section>`:''}
+  ${!all.length?`<div class="empty-box"><p>Бұл курста карточка жоқ.</p><button class="btn" data-act="cadd">${PLUS} Карточка қосу</button></div>`:''}`;
 }
-
+function vCardList(){
+  const {cid,lec}=cardsAt,loose=cid==='__loose';const c=loose?null:course(cid);if(!loose&&!c){cardsAt={space:null,fid:null};return vCards()}
+  const scope=loose?S.cards.filter(k=>!k.cid||!course(k.cid)):scopeCards();
+  const L=!loose&&lec!=='all'&&lec!=='none'?c.lectures.find(l=>l.id===lec):null;
+  const title=loose?'Басқа карточкалар':L?L.title:lec==='none'?'Сабақсыз':'Барлық карточкалар';
+  const list=applyFilter(scope,cardFilter).slice().sort(byHard);
+  const chips=FILTERS.map(([k,t])=>{const n=applyFilter(scope,k).length;return `<button class="chip${k!=='all'&&k!=='due'&&k!=='new'?' '+CST[k].c:k==='new'?' st-new':''}" data-act="cfilter" data-v="${k}" aria-pressed="${cardFilter===k}">${t} <b>${n}</b></button>`}).join('');
+  const rows=list.map(k=>{const st=cstat(k),d=k.due<=eod()?'бүгін':Math.round((sod(k.due)-sod(Date.now()))/DAY)+' күннен кейін';
+    return `<div class="item" data-key="k:${k.id}"><button class="row-main card-row" data-act="cflip" data-v="${k.id}"><span class="txt"><span class="c-f">${esc(k.f)}</span><span class="c-b" hidden>${esc(k.b)}</span><span class="meta"><span class="stag ${CST[st].c}">${CST[st].t}</span><span>${st==='new'?'әлі қайталанбаған':d}</span>${!L&&!loose&&lecOf(k)?`<span class="nprev">${esc(lecOf(k).title)}</span>`:''}</span></span></button><button class="more" data-act="imenu" data-v="k:${k.id}" aria-label="Әрекеттер">${DOTS}</button></div>`}).join('');
+  return `<header class="top">${topBar(crumbsCards(),loose?'':`<button class="icon-btn" data-act="cadd" aria-label="Карточка қосу">${PLUS}</button>`)}<h1 class="h-sm">${esc(title)}</h1></header>
+  <div class="chips wrap">${chips}</div>
+  ${list.length?`<button class="btn primary wide" data-act="crev">Қайталау · ${list.length}</button><div class="box">${rows}</div><p class="hint">Карточканы бассаң, жауабы көрінеді. Тізім ең қиындарынан басталады.</p>`:`<div class="empty-box"><p>${scope.length?'Бұл сүзгіде карточка жоқ.':'Карточка жоқ.'}</p>${loose?'':`<button class="btn" data-act="cadd">${PLUS} Карточка қосу</button>`}</div>`}`;
+}
+function cardSheet(k){
+  const c=course(k?k.cid:cardsAt.cid);
+  const lecs=c?c.lectures:[];const curL=k?k.lec:(cardsAt.lec&&cardsAt.lec!=='all'&&cardsAt.lec!=='none'?cardsAt.lec:'');
+  openSheet(k?'Карточканы өзгерту':'Жаңа карточка',`<form id="cardform" class="sheet-form"><label>Сұрақ<input id="kf" value="${k?esc(k.f):''}" required autocomplete="off"></label><label>Жауап<textarea id="kb" rows="3" required>${k?esc(k.b):''}</textarea></label>
+    ${c?`<label>Сабақ<select id="kl"><option value="">Сабақсыз</option>${lecs.map(L=>`<option value="${L.id}"${L.id===curL?' selected':''}>${esc(L.title)}</option>`).join('')}</select></label>`:''}
+    <button class="btn primary wide">Сақтау</button></form>`,{card:k?k.id:null,cid:c?c.id:null});
+}
 /* ---------- notes (iPhone-style) ---------- */
 const noteTitle=n=>(n.t.split('\n').find(l=>l.trim())||'Жаңа жазба').trim();
 const notePrev=n=>{const ls=n.t.split('\n').map(l=>l.trim()).filter(Boolean);return ls.slice(1).join(' ')};
@@ -810,8 +872,8 @@ function enhanceChecks(root){
     n.replaceWith(d);
   });
 }
-function cardForm(c){return `<form id="lvcf" class="panel"><h2>Карточка · ${esc(c.name)}</h2><label>Сұрақ<input id="lq" required autocomplete="off"></label><label>Жауап<textarea id="la" rows="2" required></textarea></label><div class="row"><button class="btn primary">Сақтау</button><p class="msg" id="lvm"></p></div></form>`}
-function saveCardFor(c){const f=$('#lq').value.trim(),b=$('#la').value.trim();if(!f||!b)return;S.cards.push({id:uid(),cid:c.id,f,b,box:0,due:Date.now()+DAY/2});save();$('#lq').value='';$('#la').value='';const m=$('#lvm');if(m)m.textContent='Сақталды';$('#lq').focus()}
+function cardForm(c){return `<form id="lvcf" class="panel"><h2>Карточка · осы сабаққа</h2><label>Сұрақ<input id="lq" required autocomplete="off"></label><label>Жауап<textarea id="la" rows="2" required></textarea></label><div class="row"><button class="btn primary">Сақтау</button><p class="msg" id="lvm"></p></div></form>`}
+function saveCardFor(c,L){const f=$('#lq').value.trim(),b=$('#la').value.trim();if(!f||!b)return;S.cards.push({id:uid(),cid:c.id,lec:L?L.id:null,f,b,box:0,due:Date.now()+DAY/2});save();$('#lq').value='';$('#la').value='';const m=$('#lvm');if(m)m.textContent='Сақталды';$('#lq').focus()}
 
 function lectureView(el,cid,lid){
   const c=course(cid),L=c&&c.lectures.find(l=>l.id===lid);
@@ -866,7 +928,7 @@ function docView(el,c,L){
   ov.addEventListener('scroll',onScroll,{passive:true});
   LV={zoom(){zoom=!zoom;const z=el.querySelector('#lvz');if(z)z.textContent=zoom?'Кішірейту':'Үлкейту';build()},
     card(){const w=el.querySelector('#lvcard');if(w.innerHTML){w.innerHTML='';return}w.innerHTML=cardForm(c);w.scrollIntoView({block:'nearest'});setTimeout(()=>{const q=$('#lq');q&&q.focus()},30)},
-    saveCard(){saveCardFor(c)},reset(){L.page=0;L.seen=0;L.done=false;save();ov.scrollTop=0}};
+    saveCard(){saveCardFor(c,L)},reset(){L.page=0;L.seen=0;L.done=false;save();ov.scrollTop=0}};
   build();
   return()=>{alive=false;ov.removeEventListener('scroll',onScroll);if(obs)obs.disconnect();clearTimeout(saveT);save();urls.forEach(u=>URL.revokeObjectURL(u));try{pdf&&pdf.destroy()}catch(e){}LV=null};
 }
@@ -896,17 +958,17 @@ function partView(el,c,L){
     reset(){L.pos=0;L.done=false;save();draw()},
     go(id){if(modeCleanup)modeCleanup();modeCleanup=lectureView(el,c.id,id)},
     card(){const w=el.querySelector('#lvcard');if(w.innerHTML){w.innerHTML='';return}w.innerHTML=cardForm(c);setTimeout(()=>{const q=$('#lq');q&&q.focus()},30)},
-    saveCard(){saveCardFor(c)}};
+    saveCard(){saveCardFor(c,L)}};
   draw();
   try{if(!sessionStorage.getItem('bm.hint')){sessionStorage.setItem('bm.hint','1');el.querySelector('.edge-hint').classList.add('show')}}catch(e){}
   return()=>{el.removeEventListener('click',onTap);LV=null};
 }
-function reviewer(el,list){
-  const q=dueOf(list).sort((a,b)=>a.due-b.due);let done=0;
+function reviewer(el,list,all){
+  const q=all?list.slice().sort(byHard):dueOf(list).sort((a,b)=>a.due-b.due);let done=0;
   function show(){
     if(!q.length){el.innerHTML=`<div class="empty"><p class="big">Дайын</p><p>${done?done+' карточка қайталанды.':'Қазір қайталайтын карточка жоқ.'}</p></div>`;return}
-    const c=q[0],src=course(c.cid);
-    el.innerHTML=`<div class="rv"><p class="rv-meta">${src?esc(src.name)+' · ':''}қалды ${q.length}</p>
+    const c=q[0],src=course(c.cid),sl=lecOf(c),st=cstat(c);
+    el.innerHTML=`<div class="rv"><p class="rv-meta">${sl?esc(sl.title):src?esc(src.name):''} · қалды ${q.length}</p><p class="rv-meta"><span class="stag ${CST[st].c}">${CST[st].t}</span></p>
       <button class="card-face" id="flip"><span class="f">${esc(c.f)}</span><span class="b" hidden>${esc(c.b)}</span><span class="tap">Жауабын көру үшін бас</span></button>
       <div class="grades" id="gr" hidden><button class="g0" data-g="0">Білмеймін</button><button class="g1" data-g="1">Қиын</button><button class="g2" data-g="2">Білемін</button></div></div>`;
     el.querySelector('#flip').onclick=()=>{el.querySelector('.b').hidden=false;el.querySelector('.tap').hidden=true;el.querySelector('#gr').hidden=false};
@@ -914,7 +976,7 @@ function reviewer(el,list){
   }
   show();
 }
-function grade(c,g){const now=Date.now();delete c.ex;
+function grade(c,g){const now=Date.now();delete c.ex;c.last=g;c.reps=(c.reps||0)+1;c.lastAt=now;
   if(g===0){c.box=0;c.due=now}else if(g===1){c.box=Math.max(1,c.box||0);c.due=sod(now)+DAY}else{c.box=Math.min(INT.length-1,(c.box||0)+1);c.due=sod(now)+DAY*INT[c.box]}save()}
 function arm(b,fn){if(b.dataset.arm){fn();return}b.dataset.arm='1';const o=b.textContent;b.textContent='Растау: өшіру';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent=o}},2500)}
 function flash(id,t){const m=$(id);if(m){m.textContent=t;clearTimeout(m._t);m._t=setTimeout(()=>{m.textContent=''},3000)}}
@@ -925,7 +987,7 @@ function curSpace(){return tab==='skills'?'skills':'courses'}
 const ACT={
   close:()=>slideClose(),
   sclose:()=>closeSheet(),
-  tab:(b,v)=>{if(noteOpen)closeNote();tab=v;if(v==='cards')cardsAt={space:null,fid:null};render();window.scrollTo(0,0)},
+  tab:(b,v)=>{if(noteOpen)closeNote();tab=v;if(v==='cards'){cardsAt={space:null,fid:null};cardFilter='all'}render();window.scrollTo(0,0)},
   open:(b,v)=>{const sp=b.dataset.s||curSpace();tab=sp;cur[sp]=v||null;render();window.scrollTo(0,0)},
   course:(b,v)=>{curCourse=v;tab='course';render();window.scrollTo(0,0)},
   plus:b=>{const sp=curSpace(),T=SPACE[sp];openPop(b,`<button data-act="newf">${ICON.folder} Жаңа папка</button><button data-act="newc">${PLUS} Жаңа ${T.one}</button><hr><button data-act="pkimp">Сабақ пакетін импорттау</button>`)},
@@ -942,6 +1004,7 @@ const ACT={
     if(t==='c'){const c=course(id);const sp=c.space;deleteCourse(c);if(tab==='course'){tab=sp}save();render();return}
     if(t==='g'){const c=course(curCourse);c.lectures.forEach(L=>{if(L.group===id)delete L.group});c.groups=(c.groups||[]).filter(g=>g.id!==id);save();render();return}
     if(t==='l'){const c=course(curCourse);const L=c.lectures.find(l=>l.id===id);if(L)dropLectureFiles(L);c.lectures=c.lectures.filter(l=>l.id!==id);save();render();return}
+    if(t==='k'){S.cards=S.cards.filter(k=>k.id!==id);save();render();return}
     if(t==='n'){S.notes=S.notes.filter(n=>n.id!==id);if(noteOpen===id){noteOpen=null;ov.hidden=true;ov.innerHTML='';document.documentElement.classList.remove('locked')}save();render()}}),
   lreset:(b,v)=>{const L=objOf(v);L.pos=0;L.page=0;L.seen=0;L.done=false;save();closePop();render()},
   addmat:()=>materialSheet(),
@@ -957,7 +1020,15 @@ const ACT={
   lmvto:(b,v)=>{const L=objOf(sheetCtx.key);if(L){if(v){L.group=v;openGroups.add(v)}else delete L.group;save()}closeSheet();render()},
   lvnext:()=>LV&&LV.next&&LV.next(), lvprev:()=>LV&&LV.prev&&LV.prev(), lvzoom:()=>LV&&LV.zoom&&LV.zoom(), lvreset:()=>LV&&LV.reset(), lvcard:()=>LV&&LV.card(), lvgo:(b,v)=>LV&&LV.go&&LV.go(v),
   cgo:(b,v)=>{cardsAt=v?{space:b.dataset.s,fid:v}:{space:null,fid:null};render();window.scrollTo(0,0)},
-  review:(b,v)=>{const body=openOverlay('Карточкалар');reviewer(body,cardsFor(v))},
+  copen:(b,v)=>{const c=course(v);cardsAt={space:c?c.space:null,fid:c?c.folder:null,cid:v,lec:v==='__loose'?'all':null};cardFilter='all';render();window.scrollTo(0,0)},
+  clopen:(b,v)=>{cardsAt={...cardsAt,lec:v};cardFilter='all';render();window.scrollTo(0,0)},
+  cfilter:(b,v)=>{cardFilter=v;render()},
+  cflip:(b,v)=>{const x=b.querySelector('.c-b');if(x)x.hidden=!x.hidden},
+  crev:()=>{const scope=cardsAt.cid==='__loose'?S.cards.filter(k=>!k.cid||!course(k.cid)):scopeCards();const list=applyFilter(scope,cardFilter);const body=openOverlay('Карточкалар');reviewer(body,list,true)},
+  cadd:()=>cardSheet(null),
+  cedit:(b,v)=>cardSheet(objOf(v)),
+  creset:(b,v)=>{const k=objOf(v);if(k){delete k.last;k.box=0;k.due=Date.now();save()}render()},
+
   nnew:()=>{const n={id:uid(),t:'',ts:Date.now(),upd:Date.now()};S.notes.unshift(n);openNote(n.id)},
   nopen:(b,v)=>openNote(v),
   nclose:()=>closeNote(),
@@ -974,8 +1045,8 @@ function mergePack(o,space,here,cnt){
         const parts=(x.parts||[]).filter(p=>typeof p==='string');if(!parts.length)return;
         let L=c.lectures.find(l=>l.lid===x.id);
         if(L){L.title=x.title||L.title;L.inline=parts;L.units=parts.length;L.order=x.order;if(L.pos>parts.length)L.pos=parts.length}
-        else{c.lectures.push({id:uid(),lid:x.id,title:x.title||'Сабақ',kind:'text',per:1,inline:parts,units:parts.length,pos:0,done:false,ts:Date.now(),files:[],order:x.order||999,pack:true});cnt.nl++}
-        (x.cards||[]).forEach(k=>{if(k&&k.f&&k.b&&!S.cards.some(q=>q.cid===c.id&&q.f===k.f)){S.cards.push({id:uid(),cid:c.id,f:String(k.f),b:String(k.b),box:0,due:Date.now()});cnt.nc++}});
+        else{L={id:uid(),lid:x.id,title:x.title||'Сабақ',kind:'text',per:1,inline:parts,units:parts.length,pos:0,done:false,ts:Date.now(),files:[],order:x.order||999,pack:true};c.lectures.push(L);cnt.nl++}
+        (x.cards||[]).forEach(k=>{if(!k||!k.f||!k.b)return;const ex=S.cards.find(q=>q.cid===c.id&&q.f===k.f);if(ex){if(!ex.lec)ex.lec=L.id;return}S.cards.push({id:uid(),cid:c.id,lec:L.id,f:String(k.f),b:String(k.b),box:0,due:Date.now()});cnt.nc++});
       });
       c.lectures.sort((a,b)=>(a.order||999)-(b.order||999));
 }
@@ -996,7 +1067,7 @@ async function syncPacks(){
   if(location.protocol!=='https:'||/claude/.test(location.hostname))return;
   try{
     const r=await fetch('courses/index.json',{cache:'no-store'});if(!r.ok)return;const idx=await r.json();
-    S.synced=S.synced||{};const cnt={nl:0,nc:0};let changed=false;const live=new Set((idx.packs||[]).map(p=>p.path));
+    S.synced=S.synced||{};if(!S.lecFix){Object.keys(S.synced).forEach(k=>{const x=S.synced[k];if(x&&typeof x==='object')x.v='-';else S.synced[k]='-'});S.lecFix=1}const cnt={nl:0,nc:0};let changed=false;const live=new Set((idx.packs||[]).map(p=>p.path));
     for(const path of Object.keys(S.synced)){if(!live.has(path)){const inf=S.synced[path];if(inf&&inf.lids)removeLids(inf.pid,inf.lids);delete S.synced[path];changed=true}}
     for(const it of idx.packs||[]){
       const prev=S.synced[it.path],pv=typeof prev==='string'?prev:prev&&prev.v;if(pv===it.v)continue;
@@ -1053,6 +1124,9 @@ document.addEventListener('submit',e=>{
     if(ctx.op==='ren'){const o=objOf(ctx.key);if(o){if(ctx.key[0]==='l')o.title=v;else o.name=v}}
     closeSheet();save();render()}
   if(id==='emoform'){const v=$('#emoin').value.trim();const o=objOf(sheetCtx.key);if(o&&v){o.emoji=[...v].slice(0,2).join('');save()}closeSheet();render()}
+  if(id==='cardform'){const f=$('#kf').value.trim(),b=$('#kb').value.trim();if(!f||!b)return;const lsel=$('#kl'),lec=lsel?lsel.value||null:null,ctx=sheetCtx||{};
+    if(ctx.card){const k=S.cards.find(x=>x.id===ctx.card);if(k){k.f=f;k.b=b;k.lec=lec}}else S.cards.push({id:uid(),cid:ctx.cid,lec,f,b,box:0,due:Date.now()});
+    closeSheet();save();render()}
   if(id==='ladd')addLecture();
   if(id==='lvcf')LV&&LV.saveCard();
 });
