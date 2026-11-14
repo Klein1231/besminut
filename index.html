@@ -471,6 +471,7 @@ body.peek #app,body.peek #tabs{filter:brightness(calc(1 - var(--peek,1)*.1));tra
 .qnav .icon-btn:disabled{opacity:.35}
 .prose figure{cursor:zoom-in}
 .prose figure.noimg img{display:none}
+.flags{list-style:none;padding:0;margin:0 0 10px}.flags li{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}.flags small{color:var(--muted)}
 .prose figure.noimg::before{content:"🖼 Сурет интернетке қосылғанда көрінеді";font-size:13px;color:var(--muted);padding:18px 0;text-align:center}
 .zoom{position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .zoom-bar{display:flex;align-items:center;gap:8px;padding:10px max(12px,env(safe-area-inset-left,0px)) 10px 16px;font-size:13px;color:var(--muted)}
@@ -821,6 +822,7 @@ function saveNoteNow(){const t=$('#ned'),n=S.notes.find(x=>x.id===noteOpen);if(!
 function closeNote(){saveNoteNow();S.notes=S.notes.filter(x=>x.t.trim());save();noteOpen=null;ov.hidden=true;ov.innerHTML='';document.documentElement.classList.remove('locked');render()}
 
 /* ---------- stats ---------- */
+function flagList(){const o=[];S.courses.forEach(c=>c.lectures.forEach(L=>{if(L.flags)Object.keys(L.flags).forEach(p=>o.push({c:c.name,l:L.title,p}))}));return o}
 function vStats(){
   const k=dkey(),todaySec=S.log[k]||0,st=streak();
   const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push({d,s:S.log[dkey(d)]||0,today:i===0})}
@@ -831,6 +833,9 @@ function vStats(){
   <section class="section"><div class="section-h"><h2>Соңғы 7 күн</h2><span>мин / күн</span></div>
     <div class="week">${days.map(x=>`<div class="wk${x.today?' today':''}" title="${Math.round(x.s/60)} мин"><div class="wk-track"><div class="wk-fill" style="height:${Math.round(x.s/max*100)}%"></div></div><small>${WD[x.d.getDay()]}</small></div>`).join('')}</div></section>
   <section class="stats"><div><b>${lessons}</b><span>сабақ оқылды</span></div><div><b>${S.cards.length}</b><span>карточка</span></div><div><b>${Math.round(total/3600)}</b><span>сағат барлығы</span></div></section>
+  ${flagList().length?`<section class="section"><div class="section-h"><h2>Түсінбеген бөлімдер</h2><span>${flagList().length}</span></div>
+    <ul class="flags">${flagList().map(f=>`<li><small>${esc(f.c)} · ${esc(f.l)}</small><br>${esc(f.p)}</li>`).join('')}</ul>
+    <div class="row"><button class="btn" data-act="flagcopy">Тізімді көшіру</button><button class="btn ghost" data-act="flagclear">Тазалау</button></div><p class="msg" id="fmsg"></p></section>`:''}
   <section class="section"><div class="section-h"><h2>Көрініс</h2></div>
     <div class="theme-seg">${[['system','Жүйе бойынша'],['light','☀️ Ашық'],['dark','🌙 Қараңғы']].map(([k,t])=>`<button data-act="theme" data-v="${k}" aria-pressed="${getTheme()===k}">${t}</button>`).join('')}</div></section>
   <details class="backup"><summary>Сақтық көшірме</summary><div class="inner">
@@ -971,7 +976,7 @@ document.addEventListener('error',e=>{const im=e.target;if(im&&im.tagName==='IMG
 /* lesson packs: 5-minute parts — tap right edge = next, left edge = back (on part 1: close) */
 function partView(el,c,L){
   el.innerHTML=`<div class="lv tapzone">
-    <div class="lv-h"><div class="lec-top"><p class="c-f" style="margin:0">${esc(L.title)}</p><button class="chip sm" data-act="lvcard">+ Карточка</button></div><div class="meta"><span id="lvp"></span></div><div id="lvsegs">${segs(L)}</div></div>
+    <div class="lv-h"><div class="lec-top"><p class="c-f" style="margin:0">${esc(L.title)}</p><span class="row" style="gap:6px;margin:0"><button class="chip sm" data-act="lvflag" id="lvf">?</button><button class="chip sm" data-act="lvcard">+ Карточка</button></span></div><div class="meta"><span id="lvp"></span></div><div id="lvsegs">${segs(L)}</div></div>
     <div id="lvcard"></div><div id="lvc" class="lv-c"></div>
     <div class="edge-hint"><span>‹</span><span>›</span></div></div>`;
   const box=el.querySelector('#lvc');
@@ -980,7 +985,10 @@ function partView(el,c,L){
     if(L.pos>=parts(L)){const nx=c.lectures.find(l=>!l.done&&l.id!==L.id);
       box.innerHTML=`<div class="empty"><p class="big">Сабақ оқылды ✓</p><p>${esc(L.title)}</p><div class="row" style="justify-content:center">${nx?`<button class="btn primary" data-act="lvgo" data-v="${nx.id}">Келесі: ${esc(nx.title)}</button>`:''}<button class="btn" data-act="lvreset">Басынан оқу</button><button class="btn ghost" data-act="close">Жабу</button></div></div>`;return}
     const ch=L.inline||[];box.innerHTML='<div class="prose">'+sanitize(ch.slice(L.pos*L.per,L.pos*L.per+L.per).join(''))+'</div>';enhanceChecks(box);ov.scrollTop=0;
+    flagBtn();
   }
+  function ptitle(){const h=(L.inline||[])[L.pos]||'';const m=h.match(/<h2[^>]*>([\s\S]*?)<\/h2>/);return m?m[1].replace(/<[^>]+>/g,''):'бөлік '+(L.pos+1)}
+  function flagBtn(){const b=el.querySelector('#lvf');if(!b)return;const on=!!(L.flags&&L.flags[ptitle()]);b.textContent=on?'? белгіленді':'? түсінбедім';b.setAttribute('aria-pressed',on);b.style.opacity=L.pos>=parts(L)?'0':'1'}
   const onTap=e=>{
     if(e.target.closest('button,a,input,textarea,select,label,summary,form,.check,.lv-h'))return;
     const fig=e.target.closest('figure');if(fig){openZoom(fig);return}
@@ -995,7 +1003,8 @@ function partView(el,c,L){
     reset(){L.pos=0;L.done=false;save();draw()},
     go(id){if(modeCleanup)modeCleanup();modeCleanup=lectureView(el,c.id,id)},
     card(){const w=el.querySelector('#lvcard');if(w.innerHTML){w.innerHTML='';return}w.innerHTML=cardForm(c);setTimeout(()=>{const q=$('#lq');q&&q.focus()},30)},
-    saveCard(){saveCardFor(c,L)}};
+    saveCard(){saveCardFor(c,L)},
+    flag(){if(L.pos>=parts(L))return;const t=ptitle();L.flags=L.flags||{};if(L.flags[t])delete L.flags[t];else L.flags[t]=Date.now();save();flagBtn()}};
   draw();
   try{if(!sessionStorage.getItem('bm.hint')){sessionStorage.setItem('bm.hint','1');el.querySelector('.edge-hint').classList.add('show')}}catch(e){}
   return()=>{el.removeEventListener('click',onTap);LV=null};
@@ -1083,7 +1092,7 @@ const ACT={
   lmv:(b,v)=>{const c=course(curCourse),L=objOf(v),gs=c.groups||[];
     openSheet('Қай папкаға',`<div class="mvlist"><button class="mv${!L.group?' on':''}" data-act="lmvto" data-v="">${ICON.folder}<span>Папкасыз</span></button>${gs.map(g=>`<button class="mv${L.group===g.id?' on':''}" data-act="lmvto" data-v="${g.id}">${ICON.folder}<span>${esc(g.name)}</span></button>`).join('')}</div><button class="btn wide" data-act="newg">${PLUS} Жаңа папка</button>`,{key:v,noFocus:true})},
   lmvto:(b,v)=>{const L=objOf(sheetCtx.key);if(L){if(v){L.group=v;openGroups.add(v)}else delete L.group;save()}closeSheet();render()},
-  lvnext:()=>LV&&LV.next&&LV.next(), lvprev:()=>LV&&LV.prev&&LV.prev(), lvzoom:()=>LV&&LV.zoom&&LV.zoom(), lvreset:()=>LV&&LV.reset(), lvcard:()=>LV&&LV.card(), lvgo:(b,v)=>LV&&LV.go&&LV.go(v),
+  lvnext:()=>LV&&LV.next&&LV.next(), lvprev:()=>LV&&LV.prev&&LV.prev(), lvzoom:()=>LV&&LV.zoom&&LV.zoom(), lvreset:()=>LV&&LV.reset(), lvcard:()=>LV&&LV.card(), lvflag:()=>LV&&LV.flag&&LV.flag(), lvgo:(b,v)=>LV&&LV.go&&LV.go(v),
   cgo:(b,v)=>{cardsAt=v?{space:b.dataset.s,fid:v}:{space:null,fid:null};render();window.scrollTo(0,0)},
   copen:(b,v)=>{const c=course(v);cardsAt={space:c?c.space:null,fid:c?c.folder:null,cid:v,lec:v==='__loose'?'all':null};cardFilter='all';render();window.scrollTo(0,0)},
   clopen:(b,v)=>{cardsAt={...cardsAt,lec:v};cardFilter='all';render();window.scrollTo(0,0)},
@@ -1101,6 +1110,8 @@ const ACT={
   copy:()=>{const ta=$('#bx');ta.value=JSON.stringify(S);const sel=()=>{ta.focus();ta.select();flash('#bmsg','Мәтін белгіленді, өзің көшіріп ал')};
     try{navigator.clipboard.writeText(ta.value).then(()=>flash('#bmsg','Көшірілді. Telegram-ға не жазбаға сақтап қой.'),sel)}catch(e){sel()}},
   import:()=>{try{const o=JSON.parse($('#bi').value);if(!o||!Array.isArray(o.courses))throw 0;S=o;norm();save();render();flash('#bmsg','Қалпына келтірілді')}catch(e){flash('#bmsg','Қате: көшірме мәтіні толық емес')}},
+  flagcopy:()=>{const t='Түсінбеген бөлімдер:\n'+flagList().map(f=>`- ${f.c} › ${f.l} › ${f.p}`).join('\n');try{navigator.clipboard.writeText(t).then(()=>flash('#fmsg','Көшірілді. Claude-қа жібер.'),()=>flash('#fmsg','Көшіру мүмкін болмады'))}catch(e){flash('#fmsg','Көшіру мүмкін болмады')}},
+  flagclear:()=>{S.courses.forEach(c=>c.lectures.forEach(L=>{delete L.flags}));save();render()},
   clearex:()=>{S.courses.filter(c=>c.ex).forEach(deleteCourse);S.cards=S.cards.filter(c=>!c.ex);S.notes=S.notes.filter(n=>!n.ex);save();render()}
 };
 
