@@ -555,6 +555,7 @@ function norm(){
   S.cards.forEach(k=>{if(k.cid===undefined){const c=S.courses.find(c=>c.name===k.deck);k.cid=c?c.id:null}});
   if(!S.v||S.v<3){S.v=3;if(!S.courses.some(c=>c.space==='skills'))S.courses.push(exampleSkill())}
   delete S.routine;delete S.decks;delete S.len;
+  if(!S.split){S.split=1;S.courses.slice().forEach(c=>{if(c.single||!c.pid)return;c.lectures.filter(L=>L.pack).forEach(L=>{const n={id:uid(),pid:L.lid,single:true,src:c.name,name:L.title,space:c.space,folder:null,emoji:c.emoji,lectures:[L]};n.ord=nextOrd(n.space,null);S.courses.push(n);S.cards.forEach(k=>{if(k.cid===c.id&&k.lec===L.id)k.cid=n.id});if(S.last&&S.last.c===c.id&&S.last.l===L.id)S.last.c=n.id});c.lectures=c.lectures.filter(L=>!L.pack);if(!c.lectures.length){S.cards.forEach(k=>{if(k.cid===c.id)k.cid=null});S.courses=S.courses.filter(x=>x.id!==c.id)}})}
 }
 function load(){try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}if(!S||typeof S!=='object')S=seed();norm()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
@@ -677,7 +678,7 @@ function folderRow(space,f,drag){
 }
 function courseRow(space,c,drag,showPath){
   const key='c:'+c.id,p=cpct(c),path=showPath&&c.folder?pathOf(c.folder).map(f=>esc(f.name)).join(' / '):'';
-  return `<div class="item" data-key="${key}"><button class="row-main" data-act="course" data-v="${c.id}">${cico(c)}<span class="txt"><span class="c-f">${c.pinned?'<i class="pin">'+ICON.pin+'</i>':''}${esc(c.name)}</span>${bar(p)}<span class="meta"><span>${c.lectures.length} сабақ</span><span>${Math.round(p*100)}%</span>${path?`<span>${path}</span>`:''}${c.ex?'<span class="ex">мысал</span>':''}</span></span></button><button class="more" data-act="imenu" data-v="${key}" aria-label="Әрекеттер">${DOTS}</button>${drag?`<span class="grip" aria-label="Ретін өзгерту">${GRIP}</span>`:''}</div>`;
+  return `<div class="item" data-key="${key}"><button class="row-main" data-act="course" data-v="${c.id}">${cico(c)}<span class="txt"><span class="c-f">${c.pinned?'<i class="pin">'+ICON.pin+'</i>':''}${esc(c.name)}</span>${bar(p)}<span class="meta"><span>${c.single?(c.lectures[0].units||0)+' бөлім':c.lectures.length+' сабақ'}</span><span>${Math.round(p*100)}%</span>${path?`<span>${path}</span>`:''}${c.ex?'<span class="ex">мысал</span>':''}</span></span></button><button class="more" data-act="imenu" data-v="${key}" aria-label="Әрекеттер">${DOTS}</button>${drag?`<span class="grip" aria-label="Ретін өзгерту">${GRIP}</span>`:''}</div>`;
 }
 function vSpace(space){
   const fid=cur[space],f=fid?folder(fid):null;if(fid&&!f){cur[space]=null;return vSpace(space)}
@@ -1063,7 +1064,7 @@ const ACT={
   sclose:()=>closeSheet(),
   tab:(b,v)=>{if(noteOpen)closeNote();tab=v;if(v==='cards'){cardsAt={space:null,fid:null};cardFilter='all'}render();window.scrollTo(0,0)},
   open:(b,v)=>{const sp=b.dataset.s||curSpace();tab=sp;cur[sp]=v||null;render();window.scrollTo(0,0)},
-  course:(b,v)=>{curCourse=v;tab='course';render();window.scrollTo(0,0)},
+  course:(b,v)=>{const c=course(v);if(c&&c.single&&c.lectures[0]){const L=c.lectures[0];const body=openOverlay(esc(L.title),{noClose:!isDoc(L)});modeCleanup=lectureView(body,c.id,L.id);return}curCourse=v;tab='course';render();window.scrollTo(0,0)},
   plus:b=>{const sp=curSpace(),T=SPACE[sp];openPop(b,`<button data-act="newf">${ICON.folder} Жаңа папка</button><button data-act="newc">${PLUS} Жаңа ${T.one}</button><hr><button data-act="pkimp">Сабақ пакетін импорттау</button>`)},
   newf:()=>nameSheet('Жаңа папка','',{op:'newf'},'Папка атауы'),
   newc:()=>{const T=SPACE[curSpace()];nameSheet('Жаңа '+T.one,'',{op:'newc'},T.ph)},
@@ -1116,16 +1117,15 @@ const ACT={
 };
 
 function mergePack(o,space,here,cnt){
-      let c=S.courses.find(x=>x.pid===o.course.id);
-      if(!c){const sp=o.course.space==='skills'||o.course.space==='courses'?o.course.space:space;c={id:uid(),pid:o.course.id,name:o.course.name||o.course.id,space:sp,folder:sp===space?here:null,lectures:[]};c.ord=nextOrd(sp,c.folder);S.courses.push(c)}
+      const sp=o.course.space==='skills'||o.course.space==='courses'?o.course.space:space;
       o.lectures.forEach(x=>{
         const parts=(x.parts||[]).filter(p=>typeof p==='string');if(!parts.length)return;
-        let L=c.lectures.find(l=>l.lid===x.id);
-        if(L){L.title=x.title||L.title;L.inline=parts;L.units=parts.length;L.order=x.order;if(L.pos>parts.length)L.pos=parts.length}
-        else{L={id:uid(),lid:x.id,title:x.title||'Сабақ',kind:'text',per:1,inline:parts,units:parts.length,pos:0,done:false,ts:Date.now(),files:[],order:x.order||999,pack:true};c.lectures.push(L);cnt.nl++}
-        (x.cards||[]).forEach(k=>{if(!k||!k.f||!k.b)return;const ex=S.cards.find(q=>q.cid===c.id&&q.f===k.f);if(ex){if(!ex.lec)ex.lec=L.id;return}S.cards.push({id:uid(),cid:c.id,lec:L.id,f:String(k.f),b:String(k.b),box:0,due:Date.now()});cnt.nc++});
+        let c=S.courses.find(q=>q.single&&q.pid===x.id),L=c&&c.lectures[0];
+        if(L){L.title=x.title||L.title;c.name=L.title;L.inline=parts;L.units=parts.length;L.order=x.order;if(L.pos>parts.length)L.pos=parts.length}
+        else{L={id:uid(),lid:x.id,title:x.title||'Сабақ',kind:'text',per:1,inline:parts,units:parts.length,pos:0,done:false,ts:Date.now(),files:[],order:x.order||999,pack:true};
+          c={id:uid(),pid:x.id,single:true,src:o.course.name||'',name:L.title,space:sp,folder:sp===space?here:null,lectures:[L]};c.ord=nextOrd(sp,c.folder);S.courses.push(c);cnt.nl++}
+        (x.cards||[]).forEach(k=>{if(!k||!k.f||!k.b)return;const ex=S.cards.find(q=>q.cid===c.id&&q.f===k.f);if(ex)return;S.cards.push({id:uid(),cid:c.id,lec:L.id,f:String(k.f),b:String(k.b),box:0,due:Date.now()});cnt.nc++});
       });
-      c.lectures.sort((a,b)=>(a.order||999)-(b.order||999));
 }
 async function importPacks(files){
   const space=curSpace(),here=tab==='course'?null:cur[space];const cnt={nl:0,nc:0};
@@ -1139,7 +1139,7 @@ async function importPacks(files){
   }catch(e){render();const m=$('#pmsg');if(m)m.textContent='Қате: '+(e&&e.message||e)}
 }
 /* auto-sync lesson packs published next to the app (GitHub Pages) */
-function removeLids(pid,lids){const c=S.courses.find(x=>x.pid===pid);if(!c||!lids.length)return;c.lectures=c.lectures.filter(l=>!lids.includes(l.lid));if(!c.lectures.length)deleteCourse(c)}
+function removeLids(pid,lids){if(!lids||!lids.length)return;S.courses.filter(c=>c.single&&lids.includes(c.pid)).forEach(deleteCourse);const c=S.courses.find(x=>!x.single&&x.pid===pid);if(c){c.lectures=c.lectures.filter(l=>!lids.includes(l.lid));if(!c.lectures.length)deleteCourse(c)}}
 async function syncPacks(){
   if(location.protocol!=='https:'||/claude/.test(location.hostname))return;
   try{
