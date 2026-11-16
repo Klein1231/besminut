@@ -35,6 +35,10 @@
   {
    "path": "courses/microprocessors/03-data-types.json",
    "v": "007600f12c15"
+  },
+  {
+   "path": "courses/microprocessors/04-instruction-format.json",
+   "v": "2251831348cf"
   }
  ]
 }
