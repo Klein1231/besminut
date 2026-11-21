@@ -482,6 +482,37 @@ body.peek #app,body.peek #tabs{filter:brightness(calc(1 - var(--peek,1)*.1));tra
 .zoom.big .zoom-in{width:220%;max-width:none;margin:0}
 .zoom.big .zoom-body{align-items:flex-start}
 .zoom-in svg{max-width:none!important}
+/* ===== review (spaced repetition), todo, say, links ===== */
+.rb{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:2px}
+.rb span{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--muted)}
+.rb i{display:block;height:6px;border-radius:3px;background:var(--sunk)}
+.rb .cur i{background:color-mix(in srgb,var(--accent) 30%,var(--sunk))}
+.rb .on{color:var(--accent);font-weight:600}.rb .on i{background:var(--accent)}
+.row-main.static{cursor:default}
+.rr{display:flex;flex-direction:column;gap:12px}
+.rr-list{display:flex;flex-direction:column;gap:10px}
+.rr-i{background:var(--surface);box-shadow:var(--shadow);border-radius:var(--r);overflow:hidden}
+.rr-h{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;width:100%;border:0;background:none;text-align:left;padding:14px 16px;font-family:var(--f-display);font-weight:600;font-size:17px;line-height:1.3;color:var(--ink)}
+.rr-n{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.rr-st{font-size:14px;font-weight:700}.rr-st.y{color:var(--good)}.rr-st.n{color:var(--bad)}
+.rr-b{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+.rr-dem{background:var(--accent-soft);border-radius:var(--r-s);padding:12px 14px;line-height:1.55;overflow-wrap:anywhere}
+.rr-dem .label{display:block;margin-bottom:4px;font-weight:600;color:var(--accent)}
+.rr-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rr-g button{border:0;box-shadow:var(--shadow);border-radius:14px;padding:13px 4px;font-weight:600;background:var(--surface)}
+.rr-g .y[aria-pressed="true"]{background:var(--good);color:#fff}
+.rr-g .n[aria-pressed="true"]{background:var(--bad);color:#fff}
+.rr-full{border-top:1px solid var(--line);padding-top:12px}
+.rr-res{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px 0}
+.rr-res .rb{width:100%;max-width:300px}
+.rr-res p{margin:0}
+.prose ul.todo{list-style:none;padding-left:0}
+.prose ul.todo li{position:relative;padding-left:2em;margin:.5em 0;cursor:pointer;-webkit-user-select:none;user-select:none}
+.prose ul.todo li::before{content:"\2610";position:absolute;left:0;top:-.05em;font-size:1.3em;line-height:1.35;color:var(--accent)}
+.prose ul.todo li[aria-checked="true"]::before{content:"\2611"}
+.prose ul.todo li[aria-checked="true"]{color:var(--muted)}
+.say-btn{border:0;background:var(--accent-soft);border-radius:999px;width:28px;height:28px;padding:0;font-size:14px;line-height:1;margin-left:6px;vertical-align:middle}
+.prose a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 @media (prefers-reduced-motion: reduce){.flip-in{transition:none}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
@@ -554,6 +585,7 @@ function norm(){
   S.courses.forEach(c=>{c.space=c.space||'courses';if(c.folder===undefined)c.folder=null;c.lectures=c.lectures||[]});
   S.cards.forEach(k=>{if(k.cid===undefined){const c=S.courses.find(c=>c.name===k.deck);k.cid=c?c.id:null}});
   if(!S.v||S.v<3){S.v=3;if(!S.courses.some(c=>c.space==='skills'))S.courses.push(exampleSkill())}
+  if(!S.rev||typeof S.rev!=='object'||Array.isArray(S.rev))S.rev={};if(!S.todo||typeof S.todo!=='object'||Array.isArray(S.todo))S.todo={};
   delete S.routine;delete S.decks;delete S.len;
   if(!S.split){S.split=1;S.courses.slice().forEach(c=>{if(c.single||!c.pid)return;c.lectures.filter(L=>L.pack).forEach(L=>{const n={id:uid(),pid:L.lid,single:true,src:c.name,name:L.title,space:c.space,folder:null,emoji:c.emoji,lectures:[L]};n.ord=nextOrd(n.space,null);S.courses.push(n);S.cards.forEach(k=>{if(k.cid===c.id&&k.lec===L.id)k.cid=n.id});if(S.last&&S.last.c===c.id&&S.last.l===L.id)S.last.c=n.id});c.lectures=c.lectures.filter(L=>!L.pack);if(!c.lectures.length){S.cards.forEach(k=>{if(k.cid===c.id)k.cid=null});S.courses=S.courses.filter(x=>x.id!==c.id)}})}
 }
@@ -653,10 +685,11 @@ function closeSheet(){if(SHEET){SHEET.remove();SHEET=null;sheetCtx=null}}
 function nameSheet(title,val,ctx,ph){openSheet(title,`<form id="sform" class="sheet-form"><input id="si" value="${esc(val||'')}" placeholder="${esc(ph||'Атауы')}" maxlength="80" autocomplete="off"><button class="btn primary wide">Сақтау</button></form>`,ctx)}
 
 /* ---------- object helpers ---------- */
-function objOf(key){const [t,id]=key.split(':');if(t==='f')return folder(id);if(t==='c')return course(id);if(t==='n')return S.notes.find(n=>n.id===id);if(t==='k')return S.cards.find(k=>k.id===id);if(t==='l'){const c=course(curCourse);return c&&c.lectures.find(l=>l.id===id)}if(t==='g'){const c=course(curCourse);return c&&(c.groups||[]).find(g=>g.id===id)}}
+function objOf(key){const [t,id]=key.split(':');if(t==='f')return folder(id);if(t==='c')return course(id);if(t==='n')return S.notes.find(n=>n.id===id);if(t==='k')return S.cards.find(k=>k.id===id);if(t==='l'){const c=course(curCourse);return c&&c.lectures.find(l=>l.id===id)}if(t==='g'){const c=course(curCourse);return c&&(c.groups||[]).find(g=>g.id===id)}if(t==='r')return S.rev[id]}
 function itemMenu(key){
   const t=key[0],o=objOf(key);if(!o)return '';
   const pin=`<button data-act="pin" data-v="${key}">${o.pinned?'Бекітуден алу':'Бекіту'}</button>`;
+  if(t==='r')return (o.done?`<button data-act="rrestart" data-v="${key}">Қайтадан бастау</button>`:'')+`<button class="danger" data-act="rm" data-v="${key}">Қайталаудан алып тастау</button>`;
   if(t==='n')return pin+`<hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
   if(t==='k')return `<button data-act="cedit" data-v="${key}">Өзгерту</button><button data-act="creset" data-v="${key}">Жаңа деп белгілеу</button><hr><button class="danger" data-act="rm" data-v="${key}">Өшіру</button>`;
   if(t==='g')return `<button data-act="ren" data-v="${key}">Атын өзгерту</button><hr><button class="danger" data-act="rm" data-v="${key}">Папканы өшіру</button>`;
@@ -688,6 +721,7 @@ function vSpace(space){
   const crumbs=fid?`<nav class="crumbs"><button data-act="open" data-v="" data-s="${space}">${T.title}</button>${pathOf(fid).slice(0,-1).map(p=>`<span>/</span><button data-act="open" data-v="${p.id}" data-s="${space}">${esc(p.name)}</button>`).join('')}</nav>`:`<p class="label">${space==='courses'?'Оқу':'Дағдылар'}</p>`;
   return `
   <header class="top">${topBar(crumbs,`<button class="icon-btn" data-act="plus" aria-label="Қосу">${PLUS}</button>`)}<h1>${fid?esc(f.name):T.title}</h1></header>
+  ${space==='courses'&&!fid?revEntry():''}
   ${pinned.length?`<section class="section"><div class="section-h"><h2>Бекітілген</h2></div><div class="box">${pinned.map(x=>x.lectures?courseRow(space,x,false,true):folderRow(space,x,false)).join('')}</div></section>`:''}
   <section class="section">
     ${pinned.length&&list.length?`<div class="section-h"><h2>Барлығы</h2></div>`:''}
@@ -723,6 +757,76 @@ function materialSheet(){
     <label>Атауы (міндетті емес)<input id="lt" placeholder="Бос қалса, файл атауы алынады" autocomplete="off"></label>
     <details class="paste"><summary>немесе мәтінді осында қой</summary><textarea id="lx" rows="5" placeholder="Мәтін"></textarea></details>
     <button class="btn primary wide" id="lbtn">Қосу</button><p class="msg" id="lmsg"></p></form>`);
+}
+
+/* ---------- spaced review: 1 · 3 · 7 days, keyed by lesson lid ---------- */
+const RB=[1,3,7];
+const lecKey=L=>L.lid||L.id;
+function findLec(key){for(const c of S.courses)for(const L of c.lectures)if(L.inline&&lecKey(L)===key)return{c,L};return null}
+function revAdd(L){const k=lecKey(L),r=S.rev[k];if(r&&!r.done)return;S.rev[k]={id:k,added:Date.now(),stage:0,due:sod(Date.now())+DAY,done:false};save()}
+function revItems(){return Object.values(S.rev).map(r=>({r,f:findLec(r.id)})).filter(x=>x.f)}
+const revDue=()=>revItems().filter(x=>!x.r.done&&x.r.due<=eod()).sort((a,b)=>a.r.due-b.r.due);
+function revWhen(r){const n=Math.round((r.due-sod(Date.now()))/DAY);return n<=0?'бүгін':n===1?'ертең':n+' күннен кейін'}
+const rbars=r=>`<div class="rb">${RB.map((d,i)=>`<span class="${r.done||i<r.stage?'on':i===r.stage?'cur':''}"><i></i>${d} күн</span>`).join('')}</div>`;
+function revFinish(r,ok,n){
+  const pass=n>0&&ok*5>=n*4,now=Date.now();r.last=now;r.lastPct=n?Math.round(ok/n*100):0;
+  if(pass){r.stage=Math.min(RB.length,(r.stage||0)+1);if(r.stage>=RB.length){r.done=true;r.due=0}else r.due=sod(now)+DAY*RB[r.stage]}
+  else r.due=sod(now)+DAY;
+  save();return pass;
+}
+/* a lesson → sections: every <h2> starts one; summary = «Демек…» inside <b>, else the section's last paragraph */
+function sectionsOf(L){
+  const out=[];
+  (L.inline||[]).forEach(h=>{const t=document.createElement('template');t.innerHTML=sanitize(h);let cur=null;
+    [...t.content.childNodes].forEach(n=>{
+      if(n.nodeType===1&&n.tagName==='H2'){cur={title:n.textContent.trim()||'Бөлім '+(out.length+1),el:document.createElement('div'),head:n};out.push(cur)}
+      else{if(!cur){if(n.nodeType===3&&!n.textContent.trim())return;cur={title:'Бөлім '+(out.length+1),el:document.createElement('div')};out.push(cur)}cur.el.appendChild(n)}})});
+  return out;
+}
+function summaryOf(el){
+  for(const b of el.querySelectorAll('b')){const t=b.textContent.trim();
+    if(/^демек/i.test(t)){if(t.replace(/[\s:,.\-—–]/g,'').length>6)return b.innerHTML;const p=b.closest('p,li');if(p)return p.innerHTML}}
+  const ps=[...el.children].filter(x=>x.tagName==='P'&&!/:\s*$/.test(x.textContent.trim()));
+  const last=ps.length?ps[ps.length-1]:[...el.querySelectorAll('p')].filter(p=>!p.closest('aside.check')).pop();
+  return last?last.innerHTML:esc(el.textContent.trim().slice(0,300));
+}
+function reviewRun(el,key){
+  const f=findLec(key);if(!f){el.innerHTML='<div class="empty"><p>Сабақ табылмады.</p></div>';return()=>{}}
+  const {L}=f,r=S.rev[key],secs=sectionsOf(L).map(x=>({...x,sum:summaryOf(x.el)}));
+  const mark=secs.map(()=>null),open=new Set();let finished=false;
+  const item=i=>{const s=secs[i],m=mark[i],o=open.has(i);
+    return `<button class="rr-h" data-rr="open" data-i="${i}" aria-expanded="${o}"><span class="rr-n">${i+1}</span><span>${esc(s.title)}</span><span class="rr-st ${m==='ok'?'y':m==='no'?'n':''}">${m==='ok'?'✓':m==='no'?'✗':''}</span></button>`+
+      (o?`<div class="rr-b"><div class="rr-dem"><span class="label">Демек</span>${s.sum}</div><div class="rr-g"><button class="y" data-rr="ok" data-i="${i}" aria-pressed="${m==='ok'}">Есімде</button><button class="n" data-rr="no" data-i="${i}" aria-pressed="${m==='no'}">Ұмыттым</button></div>${m==='no'?'<div class="rr-full prose"></div>':''}</div>`:'')};
+  function paint(i){const box=el.querySelector(`.rr-i[data-i="${i}"]`);box.innerHTML=item(i);
+    const full=box.querySelector('.rr-full');if(full){secs[i].el.childNodes.forEach(n=>full.appendChild(n.cloneNode(true)));decorate(full,L,secs[i].title)}
+    const n=mark.filter(Boolean).length,b=el.querySelector('#rrfin');b.disabled=n<secs.length;b.textContent=n<secs.length?`Аяқтау · ${n}/${secs.length}`:'Аяқтау'}
+  el.innerHTML=`<div class="rr"><div class="lv-h"><p class="c-f" style="margin:0">${esc(L.title)}</p><p class="hint" style="margin:0">Әр тақырыптың мазмұнын өзің айт, сосын басып тексер.</p></div>
+    <div class="rr-list">${secs.map((s,i)=>`<div class="rr-i" data-i="${i}">${item(i)}</div>`).join('')}</div>
+    <button class="btn primary wide" id="rrfin" data-rr="fin" disabled>Аяқтау · 0/${secs.length}</button></div>`;
+  const onClick=e=>{const b=e.target.closest('[data-rr]');if(!b||finished)return;const a=b.dataset.rr,i=+b.dataset.i;
+    if(a==='open'){if(open.has(i))open.delete(i);else open.add(i);paint(i)}
+    else if(a==='ok'||a==='no'){mark[i]=a;paint(i)}
+    else if(a==='fin'){if(mark.some(x=>!x))return;finished=true;const ok=mark.filter(x=>x==='ok').length,n=mark.length,pass=revFinish(r,ok,n);
+      el.innerHTML=`<div class="rr-res"><p class="run-name">${pass?(r.done?'Сабақ меңгерілді 🎉':'Жолақ толды ✓'):'Жолақ толған жоқ'}</p><p class="hint">${ok} / ${n} есімде · ${r.lastPct}%${pass?'':' (80% керек)'}</p>${rbars(r)}<p>${r.done?'Сабақ қайталау тізімінен шықты.':pass?'Келесі қайталау: '+revWhen(r)+'.':'Сабақ ертеңге қайта қойылды.'}</p><button class="btn primary" data-act="close">Тізімге оралу</button></div>`;ov.scrollTop=0}};
+  el.addEventListener('click',onClick);
+  return()=>el.removeEventListener('click',onClick);
+}
+function revRow(x,due){
+  const {r,f}=x,key='r:'+r.id,L=f.L,c=f.c;
+  const main=`<span class="ico hue${hue(L.title)}">${mono(L.title)}</span><span class="txt"><span class="c-f">${esc(L.title)}</span>${rbars(r)}<span class="meta"><span>${r.done?'меңгерілді':due?'бүгін қайталау':revWhen(r)}</span>${c.src?`<span>${esc(c.src)}</span>`:''}${r.lastPct!=null?`<span>соңғы: ${r.lastPct}%</span>`:''}</span></span>`;
+  return `<div class="item" data-key="${esc(key)}">${due?`<button class="row-main" data-act="rstart" data-v="${esc(r.id)}">${main}</button>`:`<div class="row-main static">${main}</div>`}<button class="more" data-act="imenu" data-v="${esc(key)}" aria-label="Әрекеттер">${DOTS}</button></div>`;
+}
+function vReview(){
+  const all=revItems(),e=eod(),due=revDue(),next=all.filter(x=>!x.r.done&&x.r.due>e).sort((a,b)=>a.r.due-b.r.due),done=all.filter(x=>x.r.done);
+  return `<header class="top">${topBar(`<nav class="crumbs"><button data-act="open" data-v="" data-s="courses">← Курстар</button></nav>`)}<h1>Қайталау</h1><p class="hint">1 · 3 · 7 күннен кейін еске түсіру</p></header>
+  <section class="section"><div class="section-h"><h2>Бүгін қайталау</h2><span>${due.length}</span></div>
+    ${due.length?`<div class="box">${due.map(x=>revRow(x,true)).join('')}</div>`:`<div class="empty-box"><p>${all.length?'Бүгін қайталайтын сабақ жоқ ✓':'Әзірге бос. Сабақты оқып біткенде «Қайталауға қосу» батырмасын бас.'}</p></div>`}</section>
+  ${next.length?`<section class="section"><div class="section-h"><h2>Келесілер</h2><span>${next.length}</span></div><div class="box">${next.map(x=>revRow(x,false)).join('')}</div></section>`:''}
+  ${done.length?`<details class="backup"><summary>Меңгерілді · ${done.length}</summary><div class="inner"><div class="box">${done.map(x=>revRow(x,false)).join('')}</div></div></details>`:''}`;
+}
+function revEntry(){
+  const it=revItems().filter(x=>!x.r.done),d=revDue().length;
+  return `<section class="section"><div class="box"><div class="item"><button class="row-main" data-act="rev"><span class="ico emo">🔁</span><span class="txt"><span class="c-f">Қайталау</span><span class="meta">${d?d+' сабақтың мерзімі келді':it.length?'бүгін қайталайтын жоқ · '+it.length+' сабақ':'1 · 3 · 7 күн аралықпен'}</span></span></button>${d?`<span class="cnt due">${d}</span>`:it.length?`<span class="cnt mute">${it.length}</span>`:''}<span class="chev">›</span></div></div></section>`;
 }
 
 /* ---------- cards: browse like folders → course → lesson → cards ---------- */
@@ -853,8 +957,8 @@ function vStats(){
 const app=$('#app');
 function render(){
   closePop();
-  app.innerHTML=tab==='course'?vCourse():tab==='cards'?vCards():tab==='notes'?vNotes():tab==='stats'?vStats():vSpace(tab==='skills'?'skills':'courses');
-  const nt=tab==='course'?(course(curCourse)||{}).space||'courses':tab;
+  app.innerHTML=tab==='course'?vCourse():tab==='review'?vReview():tab==='cards'?vCards():tab==='notes'?vNotes():tab==='stats'?vStats():vSpace(tab==='skills'?'skills':'courses');
+  const nt=tab==='course'?(course(curCourse)||{}).space||'courses':tab==='review'?'courses':tab;
   document.querySelectorAll('#tabs button').forEach(b=>{if(b.dataset.v===nt)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   if(tab==='notes')renderNoteList();
 }
@@ -893,7 +997,15 @@ function closeOverlay(){
 }
 
 /* ---------- lecture viewer ---------- */
-function sanitize(h){return String(h).replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<(iframe|object|embed|link|style)[\s\S]*?>/gi,'').replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi,'').replace(/javascript:/gi,'')}
+const LINK_OK=['youtube.com','youtu.be','python.org','pytorch.org','scikit-learn.org','kaggle.com','github.com','wikipedia.org'];
+function safeLink(h){try{const u=new URL(String(h||'').trim());if(u.protocol!=='https:'&&u.protocol!=='http:')return null;const host=u.hostname.toLowerCase();if(!LINK_OK.some(d=>host===d||host.endsWith('.'+d)))return null;u.protocol='https:';return u.href}catch(e){return null}}
+function sanitize(h){let s=String(h).replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<(iframe|object|embed|link|style)[\s\S]*?>/gi,'').replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi,'').replace(/javascript:/gi,'');
+  if(/<a[\s>]/i.test(s)){const t=document.createElement('template');t.innerHTML=s;
+    t.content.querySelectorAll('a').forEach(a=>{const u=safeLink(a.getAttribute('href'));
+      if(u){[...a.attributes].forEach(at=>{if(at.name!=='class')a.removeAttribute(at.name)});a.setAttribute('href',u);a.setAttribute('target','_blank');a.setAttribute('rel','noopener noreferrer')}
+      else a.replaceWith(...a.childNodes)});
+    s=t.innerHTML}
+  return s}
 function enhanceChecks(root){
   root.querySelectorAll('aside.check, .prose details').forEach(n=>{
     let q='',a='';
@@ -905,6 +1017,22 @@ function enhanceChecks(root){
     n.replaceWith(d);
   });
 }
+/* todo checkboxes, 🔊 buttons: added after sanitizing, state in S.todo[lessonKey] */
+const hsh=t=>{let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))>>>0;return h.toString(36)};
+function enhanceTodos(root,lk,scope){
+  const seen={},st=S.todo[lk]||{};
+  root.querySelectorAll('ul.todo').forEach(ul=>[...ul.children].filter(li=>li.tagName==='LI').forEach(li=>{
+    const f=li.firstChild;if(f&&f.nodeType===3)f.textContent=f.textContent.replace(/^\s*[☐☑☒]\s*/,'');
+    let k=hsh(scope)+'.'+hsh(li.textContent.trim());seen[k]=(seen[k]||0)+1;k+='#'+seen[k];
+    li.setAttribute('role','checkbox');li.tabIndex=0;li.dataset.act='todo';li.dataset.tl=lk;li.dataset.tk=k;li.setAttribute('aria-checked',st[k]?'true':'false')}));
+}
+function enhanceSay(root){
+  if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined')return;
+  root.querySelectorAll('span.say[lang]').forEach(sp=>{const l=sp.getAttribute('lang');if(!/^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8}){0,2}$/.test(l))return;
+    const n=sp.nextElementSibling;if(n&&n.classList.contains('say-btn'))return;
+    const b=document.createElement('button');b.type='button';b.className='say-btn';b.dataset.act='say';b.dataset.l=l;b.setAttribute('aria-label','Дыбыстау');b.textContent='🔊';sp.after(b)});
+}
+function decorate(root,L,scope){enhanceChecks(root);enhanceTodos(root,lecKey(L),scope||'');enhanceSay(root)}
 function cardForm(c){return `<form id="lvcf" class="panel"><h2>Карточка · осы сабаққа</h2><label>Сұрақ<input id="lq" required autocomplete="off"></label><label>Жауап<textarea id="la" rows="2" required></textarea></label><div class="row"><button class="btn primary">Сақтау</button><p class="msg" id="lvm"></p></div></form>`}
 function saveCardFor(c,L){const f=$('#lq').value.trim(),b=$('#la').value.trim();if(!f||!b)return;S.cards.push({id:uid(),cid:c.id,lec:L?L.id:null,f,b,box:0,due:Date.now()+DAY/2});save();$('#lq').value='';$('#la').value='';const m=$('#lvm');if(m)m.textContent='Сақталды';$('#lq').focus()}
 
@@ -933,7 +1061,7 @@ function docView(el,c,L){
         box.innerHTML=Array.from({length:n},(_,i)=>`<div class="pg img" data-i="${i}" style="width:${zoom?200:100}%"></div>`).join('');
       }else{
         const ch=await idb.get(L.files[0]);if(!ch)throw new Error('мәтін табылмады');
-        box.innerHTML='<div class="prose">'+ch.map((h,i)=>`<section class="pg txt" data-i="${i}">${sanitize(h)}</section>`).join('')+'</div>';enhanceChecks(box);
+        box.innerHTML='<div class="prose">'+ch.map((h,i)=>`<section class="pg txt" data-i="${i}">${sanitize(h)}</section>`).join('')+'</div>';decorate(box,L,'');
       }
     }catch(e){box.innerHTML=`<p class="hint">Ашылмады: ${esc(e&&e.message||e)}</p>`;return}
     if(L.kind==='pdf'||L.kind==='img'){
@@ -983,15 +1111,15 @@ function partView(el,c,L){
   const box=el.querySelector('#lvc');
   function draw(){
     const g=el.querySelector('#lvsegs');if(g)g.innerHTML=segs(L);const p=el.querySelector('#lvp');if(p)p.textContent=L.done?'оқылды':'бөлік '+(L.pos+1)+' / '+parts(L);
-    if(L.pos>=parts(L)){const nx=c.lectures.find(l=>!l.done&&l.id!==L.id);
-      box.innerHTML=`<div class="empty"><p class="big">Сабақ оқылды ✓</p><p>${esc(L.title)}</p><div class="row" style="justify-content:center">${nx?`<button class="btn primary" data-act="lvgo" data-v="${nx.id}">Келесі: ${esc(nx.title)}</button>`:''}<button class="btn" data-act="lvreset">Басынан оқу</button><button class="btn ghost" data-act="close">Жабу</button></div></div>`;return}
-    const ch=L.inline||[];box.innerHTML='<div class="prose">'+sanitize(ch.slice(L.pos*L.per,L.pos*L.per+L.per).join(''))+'</div>';enhanceChecks(box);ov.scrollTop=0;
+    if(L.pos>=parts(L)){const nx=c.lectures.find(l=>!l.done&&l.id!==L.id),rv=S.rev[lecKey(L)],inRev=rv&&!rv.done;
+      box.innerHTML=`<div class="empty"><p class="big">Сабақ оқылды ✓</p><p>${esc(L.title)}</p>${inRev?`<button class="btn wide" disabled>✓ Қайталауда</button><p class="hint">Алғашқы қайталау: ${revWhen(rv)}</p>`:`<button class="btn primary wide" data-act="lvrev">🔁 Қайталауға қосу</button>`}<div class="row" style="justify-content:center">${nx?`<button class="btn primary" data-act="lvgo" data-v="${nx.id}">Келесі: ${esc(nx.title)}</button>`:''}<button class="btn" data-act="lvreset">Басынан оқу</button><button class="btn ghost" data-act="close">Жабу</button></div></div>`;return}
+    const ch=L.inline||[];box.innerHTML='<div class="prose">'+sanitize(ch.slice(L.pos*L.per,L.pos*L.per+L.per).join(''))+'</div>';decorate(box,L,ptitle());ov.scrollTop=0;
     flagBtn();
   }
   function ptitle(){const h=(L.inline||[])[L.pos]||'';const m=h.match(/<h2[^>]*>([\s\S]*?)<\/h2>/);return m?m[1].replace(/<[^>]+>/g,''):'бөлік '+(L.pos+1)}
   function flagBtn(){const b=el.querySelector('#lvf');if(!b)return;const on=!!(L.flags&&L.flags[ptitle()]);b.textContent=on?'? белгіленді':'? түсінбедім';b.setAttribute('aria-pressed',on);b.style.opacity=L.pos>=parts(L)?'0':'1'}
   const onTap=e=>{
-    if(e.target.closest('button,a,input,textarea,select,label,summary,form,.check,.lv-h'))return;
+    if(e.target.closest('button,a,input,textarea,select,label,summary,form,.check,.lv-h,.todo'))return;
     const fig=e.target.closest('figure');if(fig){openZoom(fig);return}
     if(window.getSelection&&String(window.getSelection()).length)return;
     const x=e.clientX/innerWidth;if(x<.33)LV.back();else if(x>.67)LV.next();
@@ -1002,6 +1130,7 @@ function partView(el,c,L){
     back(){if(L.pos<=0&&!L.done){slideClose();return}LV.prev()},
     prev(){if(L.done){L.done=false;L.pos=parts(L)-1}else if(L.pos>0)L.pos--;save();draw()},
     reset(){L.pos=0;L.done=false;save();draw()},
+    rev(){revAdd(L);draw()},
     go(id){if(modeCleanup)modeCleanup();modeCleanup=lectureView(el,c.id,id)},
     card(){const w=el.querySelector('#lvcard');if(w.innerHTML){w.innerHTML='';return}w.innerHTML=cardForm(c);setTimeout(()=>{const q=$('#lq');q&&q.focus()},30)},
     saveCard(){saveCardFor(c,L)},
@@ -1080,12 +1209,19 @@ const ACT={
     if(t==='g'){const c=course(curCourse);c.lectures.forEach(L=>{if(L.group===id)delete L.group});c.groups=(c.groups||[]).filter(g=>g.id!==id);save();render();return}
     if(t==='l'){const c=course(curCourse);const L=c.lectures.find(l=>l.id===id);if(L)dropLectureFiles(L);c.lectures=c.lectures.filter(l=>l.id!==id);save();render();return}
     if(t==='k'){S.cards=S.cards.filter(k=>k.id!==id);save();render();return}
+    if(t==='r'){delete S.rev[id];save();render();return}
     if(t==='n'){S.notes=S.notes.filter(n=>n.id!==id);if(noteOpen===id){noteOpen=null;ov.hidden=true;ov.innerHTML='';document.documentElement.classList.remove('locked')}save();render()}}),
   lreset:(b,v)=>{const L=objOf(v);L.pos=0;L.page=0;L.seen=0;L.done=false;save();closePop();render()},
   addmat:()=>materialSheet(),
   emo:(b,v)=>{const o=objOf(v);openSheet('Иконка',`<div class="emo-grid">${EMOJI.map(e=>`<button data-act="emopick" data-v="${e}" class="${o.emoji===e?'on':''}">${e}</button>`).join('')}</div><form id="emoform" class="inline"><input id="emoin" placeholder="Немесе кез келген эмодзи" maxlength="8" autocomplete="off"><button class="btn primary">Қою</button></form><button class="btn ghost wide" data-act="emopick" data-v="">Иконканы алып тастау</button>`,{key:v,noFocus:true})},
   emopick:(b,v)=>{const o=objOf(sheetCtx.key);if(o){if(v)o.emoji=v;else delete o.emoji;save()}closeSheet();render()},
   theme:(b,v)=>{setTheme(v);render()},
+  rev:()=>{tab='review';render();window.scrollTo(0,0)},
+  rstart:(b,v)=>{const f=findLec(v);if(!f)return;const body=openOverlay('Қайталау · '+esc(f.L.title));modeCleanup=reviewRun(body,v)},
+  rrestart:(b,v)=>{const r=S.rev[v.slice(2)];if(r){r.done=false;r.stage=0;r.due=sod(Date.now())+DAY;save()}closePop();render()},
+  todo:b=>{const lk=b.dataset.tl,k=b.dataset.tk,o=S.todo[lk]=S.todo[lk]||{},on=b.getAttribute('aria-checked')!=='true';if(on)o[k]=1;else delete o[k];if(!Object.keys(o).length)delete S.todo[lk];b.setAttribute('aria-checked',on?'true':'false');save()},
+  say:b=>{const sp=b.previousElementSibling,syn=window.speechSynthesis;if(!sp||!syn)return;const l=b.dataset.l,u=new SpeechSynthesisUtterance(sp.textContent.trim());u.lang=l;u.rate=.9;
+    const vs=syn.getVoices(),ll=l.toLowerCase(),v=vs.find(x=>x.lang.toLowerCase().replace('_','-')===ll)||vs.find(x=>x.lang.toLowerCase().startsWith(ll.split('-')[0]));if(v)u.voice=v;syn.cancel();syn.speak(u)},
   lec:b=>{const c=course(b.dataset.c);if(!c)return;const L=c.lectures.find(l=>l.id===b.dataset.v);const body=openOverlay(esc(c.name),{noClose:L&&!isDoc(L)});modeCleanup=lectureView(body,c.id,b.dataset.v)},
   cplus:b=>openPop(b,`<button data-act="addmat">${PLUS} Материал қосу</button><button data-act="newg">${ICON.folder} Жаңа папка</button>`),
   newg:()=>nameSheet('Жаңа папка (курс ішінде)','',{op:'newg'},'Мысалы: 1-модуль'),
@@ -1093,7 +1229,7 @@ const ACT={
   lmv:(b,v)=>{const c=course(curCourse),L=objOf(v),gs=c.groups||[];
     openSheet('Қай папкаға',`<div class="mvlist"><button class="mv${!L.group?' on':''}" data-act="lmvto" data-v="">${ICON.folder}<span>Папкасыз</span></button>${gs.map(g=>`<button class="mv${L.group===g.id?' on':''}" data-act="lmvto" data-v="${g.id}">${ICON.folder}<span>${esc(g.name)}</span></button>`).join('')}</div><button class="btn wide" data-act="newg">${PLUS} Жаңа папка</button>`,{key:v,noFocus:true})},
   lmvto:(b,v)=>{const L=objOf(sheetCtx.key);if(L){if(v){L.group=v;openGroups.add(v)}else delete L.group;save()}closeSheet();render()},
-  lvnext:()=>LV&&LV.next&&LV.next(), lvprev:()=>LV&&LV.prev&&LV.prev(), lvzoom:()=>LV&&LV.zoom&&LV.zoom(), lvreset:()=>LV&&LV.reset(), lvcard:()=>LV&&LV.card(), lvflag:()=>LV&&LV.flag&&LV.flag(), lvgo:(b,v)=>LV&&LV.go&&LV.go(v),
+  lvnext:()=>LV&&LV.next&&LV.next(), lvprev:()=>LV&&LV.prev&&LV.prev(), lvzoom:()=>LV&&LV.zoom&&LV.zoom(), lvreset:()=>LV&&LV.reset(), lvcard:()=>LV&&LV.card(), lvflag:()=>LV&&LV.flag&&LV.flag(), lvgo:(b,v)=>LV&&LV.go&&LV.go(v), lvrev:()=>LV&&LV.rev&&LV.rev(),
   cgo:(b,v)=>{cardsAt=v?{space:b.dataset.s,fid:v}:{space:null,fid:null};render();window.scrollTo(0,0)},
   copen:(b,v)=>{const c=course(v);cardsAt={space:c?c.space:null,fid:c?c.folder:null,cid:v,lec:v==='__loose'?'all':null};cardFilter='all';render();window.scrollTo(0,0)},
   clopen:(b,v)=>{cardsAt={...cardsAt,lec:v};cardFilter='all';render();window.scrollTo(0,0)},
@@ -1190,7 +1326,7 @@ document.addEventListener('pointerdown',e=>{
 
 document.addEventListener('click',e=>{
   if(lpFired){lpFired=false;if(!e.target.closest('.pop')){e.preventDefault();e.stopPropagation();return}}
-  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b,b.dataset.v);if(b.closest('.pop')&&!['rm'].includes(b.dataset.act))closePop()}
+  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;if(b.dataset.act==='todo'&&e.target.closest('a'))return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b,b.dataset.v);if(b.closest('.pop')&&!['rm'].includes(b.dataset.act))closePop()}
 },true);
 document.addEventListener('submit',e=>{
   e.preventDefault();const id=e.target.id,sp=curSpace();
@@ -1207,6 +1343,7 @@ document.addEventListener('submit',e=>{
   if(id==='ladd')addLecture();
   if(id==='lvcf')LV&&LV.saveCard();
 });
+document.addEventListener('keydown',e=>{const t=e.target;if((e.key===' '||e.key==='Enter')&&t.matches&&t.matches('li[data-act="todo"]')){e.preventDefault();ACT.todo(t)}});
 document.addEventListener('input',e=>{
   if(e.target.id==='nq'){noteQ=e.target.value;renderNoteList()}
   if(e.target.id==='ned'){clearTimeout(noteTimer);noteTimer=setTimeout(saveNoteNow,300)}
