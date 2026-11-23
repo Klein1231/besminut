@@ -39,6 +39,10 @@
   {
    "path": "courses/microprocessors/04-instruction-format.json",
    "v": "4714ca1018a7"
+  },
+  {
+   "path": "courses/microprocessors/05-instruction-set.json",
+   "v": "a6d8613e013f"
   }
  ]
 }
