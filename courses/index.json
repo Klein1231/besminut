@@ -46,7 +46,11 @@
   },
   {
    "path": "courses/microprocessors/06-addressing.json",
-   "v": "c85f5bf096bb"
+   "v": "7942dfcd7a93"
+  },
+  {
+   "path": "courses/microprocessors/07-addressing-2.json",
+   "v": "0b3e15c2c692"
   }
  ]
 }
