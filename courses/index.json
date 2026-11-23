@@ -43,6 +43,10 @@
   {
    "path": "courses/microprocessors/05-instruction-set.json",
    "v": "a6d8613e013f"
+  },
+  {
+   "path": "courses/microprocessors/06-addressing.json",
+   "v": "c85f5bf096bb"
   }
  ]
 }
