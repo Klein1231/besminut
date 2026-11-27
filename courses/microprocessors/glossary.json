@@ -964,5 +964,131 @@
   "ru": "перенос",
   "en": "carry",
   "abbr": ""
+ },
+ {
+  "kk": "әмбебап МП",
+  "ru": "универсальный процессор",
+  "en": "general-purpose processor",
+  "abbr": ""
+ },
+ {
+  "kk": "арнайы МП",
+  "ru": "специализированный процессор",
+  "en": "special-purpose processor",
+  "abbr": ""
+ },
+ {
+  "kk": "сандық сигналдық процессор",
+  "ru": "цифровой сигнальный процессор, ЦСП",
+  "en": "digital signal processor",
+  "abbr": "DSP"
+ },
+ {
+  "kk": "бір чиптегі жүйе",
+  "ru": "система на кристалле",
+  "en": "system on chip",
+  "abbr": "SoC"
+ },
+ {
+  "kk": "конвейер",
+  "ru": "конвейер",
+  "en": "pipeline",
+  "abbr": ""
+ },
+ {
+  "kk": "микрооперация",
+  "ru": "микрооперация",
+  "en": "micro-operation, µ-op",
+  "abbr": ""
+ },
+ {
+  "kk": "кэш-жад",
+  "ru": "кэш-память",
+  "en": "cache memory",
+  "abbr": ""
+ },
+ {
+  "kk": "фон Нейман тар құрығы",
+  "ru": "узкое место фон Неймана",
+  "en": "von Neumann bottleneck",
+  "abbr": ""
+ },
+ {
+  "kk": "біркристалды МП",
+  "ru": "однокристальный МП",
+  "en": "single-chip microprocessor",
+  "abbr": ""
+ },
+ {
+  "kk": "көпкристалды МП",
+  "ru": "многокристальный МП",
+  "en": "multi-chip microprocessor",
+  "abbr": ""
+ },
+ {
+  "kk": "секциялық МП",
+  "ru": "секционный (разрядно-модульный) МП",
+  "en": "bit-slice microprocessor",
+  "abbr": ""
+ },
+ {
+  "kk": "көпядролы процессор",
+  "ru": "многоядерный процессор",
+  "en": "multi-core processor",
+  "abbr": ""
+ },
+ {
+  "kk": "ағын",
+  "ru": "поток",
+  "en": "thread",
+  "abbr": ""
+ },
+ {
+  "kk": "қатты логикалы басқару құрылғысы",
+  "ru": "БУ с жёсткой логикой",
+  "en": "hardwired control unit",
+  "abbr": ""
+ },
+ {
+  "kk": "микробағдарламалық басқару құрылғысы",
+  "ru": "БУ с микропрограммным управлением",
+  "en": "microprogrammed control unit",
+  "abbr": ""
+ },
+ {
+  "kk": "микрокоманда",
+  "ru": "микрокоманда",
+  "en": "microinstruction",
+  "abbr": ""
+ },
+ {
+  "kk": "басқару сигналы",
+  "ru": "управляющий сигнал",
+  "en": "control signal",
+  "abbr": ""
+ },
+ {
+  "kk": "комплементарлы металл-оксид-жартылай өткізгіш",
+  "ru": "КМОП",
+  "en": "CMOS",
+  "abbr": "КМОП"
+ },
+ {
+  "kk": "затвор",
+  "ru": "затвор",
+  "en": "gate",
+  "abbr": ""
+ },
+ {
+  "kk": "FinFET",
+  "ru": "FinFET",
+  "en": "FinFET",
+  "abbr": ""
+ },
+ {
+  "kk": "GAAFET",
+  "ru": "GAAFET",
+  "en": "gate-all-around FET",
+  "abbr": ""
  }
 ]
