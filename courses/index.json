@@ -25,32 +25,16 @@
    "v": "8a12e395223d"
   },
   {
-   "path": "courses/microprocessors/01-history.json",
-   "v": "c83f5f65ab58"
+   "path": "courses/microprocessors/10-instruction-set.json",
+   "v": "48f163527a6a"
   },
   {
-   "path": "courses/microprocessors/02-structure.json",
-   "v": "778f943b830a"
+   "path": "courses/microprocessors/11-addressing.json",
+   "v": "2f2522f912da"
   },
   {
-   "path": "courses/microprocessors/03-data-types.json",
-   "v": "007600f12c15"
-  },
-  {
-   "path": "courses/microprocessors/04-instruction-format.json",
-   "v": "4714ca1018a7"
-  },
-  {
-   "path": "courses/microprocessors/05-instruction-set.json",
-   "v": "a6d8613e013f"
-  },
-  {
-   "path": "courses/microprocessors/06-addressing.json",
-   "v": "7942dfcd7a93"
-  },
-  {
-   "path": "courses/microprocessors/07-addressing-2.json",
-   "v": "0b3e15c2c692"
+   "path": "courses/microprocessors/12-addressing-2.json",
+   "v": "d711972fb942"
   },
   {
    "path": "courses/ml-ai-engineer/00-plan.json",

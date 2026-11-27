@@ -5,7 +5,7 @@ from lib import T,TL,B,A,P,S,F,IMG
 from sym import L,R,C,TR
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT=f'{ROOT}/courses/microprocessors'
-SL=f'{ROOT}/tools/slides-05'
+SL=f'{ROOT}/tools/slides-10'
 course={"id":"microprocessors","name":"Микропроцессорлық жүйелер","lang":"kk","space":"courses"}
 def H(t):return f'<h2>{t}</h2>'
 def LEAD(t):return f'<p class="lead">{t}</p>'
@@ -437,7 +437,7 @@ def pack(lid,order,title,parts,fn):
     json.dump(d,open(f'{OUT}/{fn}','w',encoding='utf-8'),ensure_ascii=False)
     print(fn,len(parts),'parts',os.path.getsize(f'{OUT}/{fn}')//1024,'KB')
 if __name__=='__main__':
-    pack('microprocessors-05-instruction-set',5,'5-сабақ. Микропроцессордың команда жүйесі',L5,'05-instruction-set.json')
+    pack('microprocessors-10-instruction-set',10,'10-сабақ. Микропроцессордың команда жүйесі',L5,'10-instruction-set.json')
     g=json.load(open(f'{OUT}/glossary.json',encoding='utf-8'));have={x['kk'] for x in g}
     abbrs={x['abbr'] for x in g if x['abbr']}
     for a,b,c,d in new_gloss:
