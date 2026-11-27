@@ -1,28 +1,12 @@
 {
  "packs": [
   {
-   "path": "courses/building-automation/01-water.json",
-   "v": "0442bf73f235"
-  },
-  {
-   "path": "courses/building-automation/02-power.json",
-   "v": "b955e32c3d33"
-  },
-  {
-   "path": "courses/building-automation/03-fire-alarm.json",
-   "v": "a5eb75aef9a9"
-  },
-  {
    "path": "courses/control-modeling/01-boiler-pressure.json",
    "v": "cbc86cb7296a"
   },
   {
    "path": "courses/control-modeling/02-defense.json",
    "v": "e371e3250ce2"
-  },
-  {
-   "path": "courses/memory-technique/01-chain.json",
-   "v": "8a12e395223d"
   },
   {
    "path": "courses/microprocessors/10-instruction-set.json",
