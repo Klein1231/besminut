@@ -147,6 +147,10 @@
   {
    "path": "courses/scada/07-modbus-tcp.json",
    "v": "f760fcf8ef3a"
+  },
+  {
+   "path": "courses/scada/08-tags.json",
+   "v": "80595813b23e"
   }
  ]
 }
