@@ -844,5 +844,65 @@
   "ru": "имитация (симуляция) сигнала",
   "en": "signal simulation",
   "abbr": ""
+ },
+ {
+  "kk": "желіні бөлу",
+  "ru": "сегментация сети",
+  "en": "network segmentation",
+  "abbr": ""
+ },
+ {
+  "kk": "VLAN",
+  "ru": "VLAN (виртуальная локальная сеть)",
+  "en": "virtual LAN",
+  "abbr": "VLAN"
+ },
+ {
+  "kk": "firewall",
+  "ru": "межсетевой экран",
+  "en": "firewall",
+  "abbr": ""
+ },
+ {
+  "kk": "ең аз қажетті қолжетімділік",
+  "ru": "принцип наименьших привилегий",
+  "en": "least privilege",
+  "abbr": ""
+ },
+ {
+  "kk": "аккаунт",
+  "ru": "учётная запись",
+  "en": "account",
+  "abbr": ""
+ },
+ {
+  "kk": "көп факторлы аутентификация",
+  "ru": "многофакторная аутентификация",
+  "en": "multi-factor authentication",
+  "abbr": "MFA"
+ },
+ {
+  "kk": "VPN",
+  "ru": "VPN (виртуальная частная сеть)",
+  "en": "virtual private network",
+  "abbr": "VPN"
+ },
+ {
+  "kk": "RDP",
+  "ru": "удалённый рабочий стол",
+  "en": "Remote Desktop Protocol",
+  "abbr": "RDP"
+ },
+ {
+  "kk": "резервтік көшірме",
+  "ru": "резервная копия",
+  "en": "backup",
+  "abbr": ""
+ },
+ {
+  "kk": "сеанс",
+  "ru": "сеанс",
+  "en": "session",
+  "abbr": ""
  }
 ]

@@ -207,6 +207,10 @@
   {
    "path": "courses/scada/13-cabinet-commissioning.json",
    "v": "865b9d12991f"
+  },
+  {
+   "path": "courses/scada/14-security-remote.json",
+   "v": "e5c0b363bdd4"
   }
  ]
 }
