@@ -646,5 +646,71 @@
   "ru": "элеватор (водоструйный)",
   "en": "jet mixing unit",
   "abbr": ""
+ },
+ {
+  "kk": "АВР",
+  "ru": "автоматическое включение резерва",
+  "en": "automatic transfer switch (ATS)",
+  "abbr": "АВР"
+ },
+ {
+  "kk": "ввод",
+  "ru": "ввод",
+  "en": "incomer (power feed)",
+  "abbr": ""
+ },
+ {
+  "kk": "блокировка",
+  "ru": "блокировка",
+  "en": "interlock",
+  "abbr": ""
+ },
+ {
+  "kk": "ҮҚК",
+  "ru": "источник бесперебойного питания",
+  "en": "uninterruptible power supply (UPS)",
+  "abbr": "ҮҚК"
+ },
+ {
+  "kk": "ДГҚ",
+  "ru": "дизель-генераторная установка",
+  "en": "diesel generator set",
+  "abbr": "ДГҚ"
+ },
+ {
+  "kk": "кернеу релесі",
+  "ru": "реле напряжения",
+  "en": "voltage relay",
+  "abbr": ""
+ },
+ {
+  "kk": "DALI",
+  "ru": "DALI",
+  "en": "Digital Addressable Lighting Interface",
+  "abbr": "DALI"
+ },
+ {
+  "kk": "қатысу датчигі",
+  "ru": "датчик присутствия",
+  "en": "presence sensor",
+  "abbr": ""
+ },
+ {
+  "kk": "жарықтылық датчигі",
+  "ru": "датчик освещённости",
+  "en": "illuminance (lux) sensor",
+  "abbr": ""
+ },
+ {
+  "kk": "сценарий",
+  "ru": "сценарий (сцена)",
+  "en": "lighting scene",
+  "abbr": ""
+ },
+ {
+  "kk": "жүктемені шектеу",
+  "ru": "ограничение нагрузки (пиковая нагрузка)",
+  "en": "load shedding / demand limiting",
+  "abbr": ""
  }
 ]
