@@ -591,9 +591,9 @@ function norm(){
 }
 function load(){try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}if(!S||typeof S!=='object')S=seed();norm()}
 /* pack lesson parts live in IndexedDB ('p:'+lecture id): localStorage is ~5 MB and overflowed, so nothing was saved */
-const stored=new WeakSet();let saveWarned=false;
+const APPV='2026-11-28b';const stored=new WeakSet();let saveWarned=false,saveInfo={ok:null,kb:0,err:''};
 function persistParts(){S.courses.forEach(c=>c.lectures.forEach(L=>{if(L.pack&&Array.isArray(L.inline)&&!stored.has(L.inline)){const v=L.inline;stored.add(v);idb.set('p:'+L.id,v).catch(()=>stored.delete(v))}}))}
-function save(){persistParts();try{localStorage.setItem(KEY,JSON.stringify(S,function(k,v){return k==='inline'&&this&&this.pack?undefined:v}));saveWarned=false}catch(e){if(!saveWarned){saveWarned=true;try{toast('Сақтау мүмкін болмады: телефон жады толы')}catch(_){}}}}
+function save(){persistParts();let j='';try{j=JSON.stringify(S,function(k,v){return k==='inline'&&this&&this.pack?undefined:v});localStorage.setItem(KEY,j);saveWarned=false;saveInfo={ok:true,kb:Math.round(j.length/1024),err:''}}catch(e){saveInfo={ok:false,kb:Math.round(j.length/1024),err:String(e&&(e.name||e.message)||e)};if(!saveWarned){saveWarned=true;try{toast('Сақтау мүмкін болмады: телефон жады толы')}catch(_){}}}}
 async function hydrate(){const miss=[],jobs=[];S.courses.forEach(c=>c.lectures.forEach(L=>{if(!L.pack||Array.isArray(L.inline))return;jobs.push(idb.get('p:'+L.id).then(v=>{if(Array.isArray(v)){L.inline=v;stored.add(v)}else miss.push(L)},()=>miss.push(L)))}));
   await Promise.all(jobs);
   if(miss.length&&S.synced){const lids=new Set(miss.map(L=>L.lid));Object.keys(S.synced).forEach(k=>{const x=S.synced[k];if(x&&typeof x==='object'&&(x.lids||[]).some(l=>lids.has(l)))x.v='-'})}
@@ -958,7 +958,8 @@ function vStats(){
     <button class="btn" data-act="import">Жүктеу</button>
     ${S.cards.some(c=>c.ex)||S.notes.some(n=>n.ex)||S.courses.some(c=>c.ex)?'<button class="btn ghost" data-act="clearex">Мысалдарды өшіру</button>':''}
     <p class="msg" id="bmsg"></p>
-  </div></details>`;
+  </div></details>
+  <p class="hint">Нұсқа ${APPV} · сақтау: ${saveInfo.ok===false?'ҚАТЕ ('+esc(saveInfo.err)+')':saveInfo.ok?'жұмыс істейді':'—'} · ${saveInfo.kb} КБ</p>`;
 }
 
 const app=$('#app');
