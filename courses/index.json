@@ -95,6 +95,10 @@
   {
    "path": "courses/scada/02-signals.json",
    "v": "63f319c9f872"
+  },
+  {
+   "path": "courses/scada/03-channel.json",
+   "v": "c5d71bc68e83"
   }
  ]
 }
