@@ -310,5 +310,71 @@
   "ru": "патч-панель",
   "en": "patch panel",
   "abbr": ""
+ },
+ {
+  "kk": "master",
+  "ru": "master (клиент)",
+  "en": "master (client)",
+  "abbr": ""
+ },
+ {
+  "kk": "slave",
+  "ru": "slave (сервер)",
+  "en": "slave (server)",
+  "abbr": ""
+ },
+ {
+  "kk": "Modbus RTU кадры",
+  "ru": "кадр Modbus RTU",
+  "en": "Modbus RTU frame",
+  "abbr": ""
+ },
+ {
+  "kk": "функция коды",
+  "ru": "код функции",
+  "en": "function code",
+  "abbr": ""
+ },
+ {
+  "kk": "holding register",
+  "ru": "holding-регистр",
+  "en": "holding register",
+  "abbr": ""
+ },
+ {
+  "kk": "бақылау сомасы CRC",
+  "ru": "контрольная сумма CRC",
+  "en": "cyclic redundancy check",
+  "abbr": "CRC"
+ },
+ {
+  "kk": "символ",
+  "ru": "символ",
+  "en": "character",
+  "abbr": ""
+ },
+ {
+  "kk": "жұптық бит",
+  "ru": "бит чётности",
+  "en": "parity bit",
+  "abbr": ""
+ },
+ {
+  "kk": "baud rate",
+  "ru": "скорость обмена (baud rate)",
+  "en": "baud rate",
+  "abbr": ""
+ },
+ {
+  "kk": "таймаут",
+  "ru": "таймаут",
+  "en": "timeout",
+  "abbr": ""
+ },
+ {
+  "kk": "exception response",
+  "ru": "ответ-исключение",
+  "en": "exception response",
+  "abbr": ""
  }
 ]
