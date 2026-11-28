@@ -376,5 +376,77 @@
   "ru": "ответ-исключение",
   "en": "exception response",
   "abbr": ""
+ },
+ {
+  "kk": "Modbus TCP",
+  "ru": "Modbus TCP",
+  "en": "Modbus TCP",
+  "abbr": ""
+ },
+ {
+  "kk": "TCP/IP",
+  "ru": "TCP/IP",
+  "en": "TCP/IP",
+  "abbr": ""
+ },
+ {
+  "kk": "IP адрес",
+  "ru": "IP-адрес",
+  "en": "IP address",
+  "abbr": ""
+ },
+ {
+  "kk": "порт",
+  "ru": "порт",
+  "en": "port",
+  "abbr": ""
+ },
+ {
+  "kk": "Unit ID",
+  "ru": "Unit ID",
+  "en": "unit identifier",
+  "abbr": ""
+ },
+ {
+  "kk": "MBAP тақырыбы",
+  "ru": "заголовок MBAP",
+  "en": "MBAP header",
+  "abbr": ""
+ },
+ {
+  "kk": "Transaction ID",
+  "ru": "Transaction ID",
+  "en": "transaction identifier",
+  "abbr": ""
+ },
+ {
+  "kk": "subnet mask",
+  "ru": "маска подсети",
+  "en": "subnet mask",
+  "abbr": ""
+ },
+ {
+  "kk": "default gateway",
+  "ru": "шлюз по умолчанию",
+  "en": "default gateway",
+  "abbr": ""
+ },
+ {
+  "kk": "маршрутизатор",
+  "ru": "маршрутизатор",
+  "en": "router",
+  "abbr": ""
+ },
+ {
+  "kk": "RTU/TCP шлюзі",
+  "ru": "шлюз RTU/TCP",
+  "en": "RTU/TCP gateway",
+  "abbr": ""
+ },
+ {
+  "kk": "transparent режим",
+  "ru": "прозрачный режим",
+  "en": "transparent mode",
+  "abbr": ""
  }
 ]
