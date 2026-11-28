@@ -994,5 +994,65 @@
   "ru": "шлюз",
   "en": "gateway",
   "abbr": ""
+ },
+ {
+  "kk": "SCADA",
+  "ru": "диспетчерское управление и сбор данных",
+  "en": "supervisory control and data acquisition",
+  "abbr": "SCADA"
+ },
+ {
+  "kk": "HMI",
+  "ru": "человеко-машинный интерфейс",
+  "en": "human–machine interface",
+  "abbr": "HMI"
+ },
+ {
+  "kk": "тег",
+  "ru": "тег",
+  "en": "tag",
+  "abbr": ""
+ },
+ {
+  "kk": "драйвер",
+  "ru": "драйвер связи",
+  "en": "communication driver",
+  "abbr": ""
+ },
+ {
+  "kk": "мнемосхема",
+  "ru": "мнемосхема",
+  "en": "mimic diagram",
+  "abbr": ""
+ },
+ {
+  "kk": "дабыл басымдығы",
+  "ru": "приоритет тревоги",
+  "en": "alarm priority",
+  "abbr": ""
+ },
+ {
+  "kk": "дабылды тану",
+  "ru": "квитирование тревоги",
+  "en": "alarm acknowledgement",
+  "abbr": ""
+ },
+ {
+  "kk": "historian",
+  "ru": "архив (хистореан)",
+  "en": "historian",
+  "abbr": ""
+ },
+ {
+  "kk": "өлшеу аймағы бойынша сығу",
+  "ru": "сжатие по зоне нечувствительности",
+  "en": "deadband compression",
+  "abbr": ""
+ },
+ {
+  "kk": "OPC UA",
+  "ru": "OPC UA",
+  "en": "OPC Unified Architecture",
+  "abbr": "OPC UA"
  }
 ]
