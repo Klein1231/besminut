@@ -215,6 +215,10 @@
   {
    "path": "courses/scada/14-security-remote.json",
    "v": "e5c0b363bdd4"
+  },
+  {
+   "path": "courses/scada/15-documentation-summary.json",
+   "v": "afef2cb9aa4b"
   }
  ]
 }
