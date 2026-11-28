@@ -155,6 +155,10 @@
   {
    "path": "courses/scada/08-tags.json",
    "v": "80595813b23e"
+  },
+  {
+   "path": "courses/scada/09-operator-screen.json",
+   "v": "5b452b4ea36e"
   }
  ]
 }
