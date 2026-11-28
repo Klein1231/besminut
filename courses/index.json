@@ -62,7 +62,7 @@
   },
   {
    "path": "courses/industrial-networks/06-bus-load.json",
-   "v": "e6aabae21e4e"
+   "v": "9b6458e5af8d"
   },
   {
    "path": "courses/industrial-networks/07-bacnet.json",
@@ -74,7 +74,11 @@
   },
   {
    "path": "courses/industrial-networks/09-mbus.json",
-   "v": "3ad47546eb33"
+   "v": "841657c315d8"
+  },
+  {
+   "path": "courses/industrial-networks/10-industrial-ethernet.json",
+   "v": "30d31b3bd342"
   },
   {
    "path": "courses/microprocessors/01-intro.json",

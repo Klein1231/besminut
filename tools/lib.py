@@ -25,3 +25,7 @@ def P(pts,c='ln',hd='hd',dash=False):
     a=math.atan2(y2-y1,x2-x1);bx,by=x2-8*math.cos(a),y2-8*math.sin(a);px,py=-math.sin(a)*4.5,math.cos(a)*4.5
     return f'<path d="{d} L{bx:.1f} {by:.1f}" class="{c}{" dash" if dash else ""}"/><polygon points="{x2},{y2} {bx+px:.1f},{by+py:.1f} {bx-px:.1f},{by-py:.1f}" class="{hd}"/>'
 def TL(x,y,s,c=''):return f'<text x="{x}" y="{y}" text-anchor="start" class="{c}">{s}</text>'
+import re as _re
+def DC(s):
+    """decimal comma: replace '.' only between digits"""
+    return _re.sub(r'(?<=\d)\.(?=\d)',',',s)

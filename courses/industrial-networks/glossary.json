@@ -730,5 +730,89 @@
   "ru": "накопленное значение",
   "en": "cumulative value",
   "abbr": ""
+ },
+ {
+  "kk": "коммутатор",
+  "ru": "коммутатор",
+  "en": "switch",
+  "abbr": ""
+ },
+ {
+  "kk": "MAC адрес",
+  "ru": "MAC-адрес",
+  "en": "MAC address",
+  "abbr": "MAC"
+ },
+ {
+  "kk": "басқарылатын коммутатор",
+  "ru": "управляемый коммутатор",
+  "en": "managed switch",
+  "abbr": ""
+ },
+ {
+  "kk": "VLAN",
+  "ru": "виртуальная локальная сеть",
+  "en": "virtual LAN",
+  "abbr": "VLAN"
+ },
+ {
+  "kk": "access порты",
+  "ru": "порт доступа",
+  "en": "access port",
+  "abbr": ""
+ },
+ {
+  "kk": "trunk порты",
+  "ru": "магистральный порт",
+  "en": "trunk port",
+  "abbr": ""
+ },
+ {
+  "kk": "802.1Q тегі",
+  "ru": "тег 802.1Q",
+  "en": "802.1Q tag",
+  "abbr": ""
+ },
+ {
+  "kk": "broadcast",
+  "ru": "широковещание",
+  "en": "broadcast",
+  "abbr": ""
+ },
+ {
+  "kk": "broadcast storm",
+  "ru": "широковещательный шторм",
+  "en": "broadcast storm",
+  "abbr": ""
+ },
+ {
+  "kk": "резервтеу",
+  "ru": "резервирование",
+  "en": "redundancy",
+  "abbr": ""
+ },
+ {
+  "kk": "STP",
+  "ru": "протокол остовного дерева",
+  "en": "spanning tree protocol",
+  "abbr": "STP"
+ },
+ {
+  "kk": "RSTP",
+  "ru": "быстрый протокол остовного дерева",
+  "en": "rapid spanning tree protocol",
+  "abbr": "RSTP"
+ },
+ {
+  "kk": "SNMP",
+  "ru": "простой протокол управления сетью",
+  "en": "simple network management protocol",
+  "abbr": "SNMP"
+ },
+ {
+  "kk": "link flap",
+  "ru": "дребезг линка",
+  "en": "link flap",
+  "abbr": ""
  }
 ]
