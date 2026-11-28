@@ -964,5 +964,41 @@
   "ru": "защита транспортного уровня",
   "en": "transport layer security",
   "abbr": "TLS"
+ },
+ {
+  "kk": "сегменттеу",
+  "ru": "сегментация",
+  "en": "segmentation",
+  "abbr": ""
+ },
+ {
+  "kk": "subnet",
+  "ru": "подсеть",
+  "en": "subnet",
+  "abbr": ""
+ },
+ {
+  "kk": "адрестік жоспар",
+  "ru": "адресный план",
+  "en": "address plan",
+  "abbr": ""
+ },
+ {
+  "kk": "as-built сұлба",
+  "ru": "исполнительная схема",
+  "en": "as-built diagram",
+  "abbr": ""
+ },
+ {
+  "kk": "құрылғылар тізімі",
+  "ru": "перечень устройств",
+  "en": "device inventory",
+  "abbr": ""
+ },
+ {
+  "kk": "HVAC",
+  "ru": "отопление, вентиляция и кондиционирование",
+  "en": "heating, ventilation and air conditioning",
+  "abbr": "HVAC"
  }
 ]
