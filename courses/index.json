@@ -191,6 +191,10 @@
   {
    "path": "courses/scada/12-archive-trend-report.json",
    "v": "79fcb78f64ec"
+  },
+  {
+   "path": "courses/scada/13-cabinet-commissioning.json",
+   "v": "865b9d12991f"
   }
  ]
 }
