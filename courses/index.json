@@ -127,6 +127,10 @@
   {
    "path": "courses/scada/05-modbus-rtu.json",
    "v": "f0eec04aa144"
+  },
+  {
+   "path": "courses/scada/06-register-map.json",
+   "v": "b9da9bf6c571"
   }
  ]
 }

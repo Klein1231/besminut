@@ -430,5 +430,77 @@
   "ru": "стоп-бит",
   "en": "stop bit",
   "abbr": ""
+ },
+ {
+  "kk": "регистр картасы",
+  "ru": "карта регистров",
+  "en": "register map",
+  "abbr": ""
+ },
+ {
+  "kk": "Coil",
+  "ru": "катушка (дискретный выход)",
+  "en": "coil",
+  "abbr": ""
+ },
+ {
+  "kk": "Discrete Input",
+  "ru": "дискретный вход",
+  "en": "discrete input",
+  "abbr": ""
+ },
+ {
+  "kk": "Input Register",
+  "ru": "регистр ввода",
+  "en": "input register",
+  "abbr": ""
+ },
+ {
+  "kk": "Holding Register",
+  "ru": "регистр хранения",
+  "en": "holding register",
+  "abbr": ""
+ },
+ {
+  "kk": "масштаб коэффициенті",
+  "ru": "масштабный коэффициент",
+  "en": "scale factor",
+  "abbr": ""
+ },
+ {
+  "kk": "offset (ығысу)",
+  "ru": "смещение",
+  "en": "offset",
+  "abbr": ""
+ },
+ {
+  "kk": "сөз тәртібі",
+  "ru": "порядок слов",
+  "en": "word order",
+  "abbr": ""
+ },
+ {
+  "kk": "байт тәртібі",
+  "ru": "порядок байтов",
+  "en": "byte order",
+  "abbr": ""
+ },
+ {
+  "kk": "дерек типі",
+  "ru": "тип данных",
+  "en": "data type",
+  "abbr": ""
+ },
+ {
+  "kk": "уставка",
+  "ru": "уставка",
+  "en": "setpoint",
+  "abbr": ""
+ },
+ {
+  "kk": "SCADA тегі",
+  "ru": "тег SCADA",
+  "en": "SCADA tag",
+  "abbr": ""
  }
 ]
