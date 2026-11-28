@@ -478,5 +478,131 @@
   "ru": "минимальная конфигурация",
   "en": "minimal configuration",
   "abbr": ""
+ },
+ {
+  "kk": "объект",
+  "ru": "объект",
+  "en": "object",
+  "abbr": ""
+ },
+ {
+  "kk": "қасиет",
+  "ru": "свойство",
+  "en": "property",
+  "abbr": ""
+ },
+ {
+  "kk": "сервис",
+  "ru": "сервис",
+  "en": "service",
+  "abbr": ""
+ },
+ {
+  "kk": "Device Instance",
+  "ru": "Device Instance",
+  "en": "device instance",
+  "abbr": ""
+ },
+ {
+  "kk": "Object Identifier",
+  "ru": "идентификатор объекта",
+  "en": "object identifier",
+  "abbr": ""
+ },
+ {
+  "kk": "Present Value",
+  "ru": "текущее значение",
+  "en": "present value",
+  "abbr": ""
+ },
+ {
+  "kk": "Status Flags",
+  "ru": "флаги состояния",
+  "en": "status flags",
+  "abbr": ""
+ },
+ {
+  "kk": "Analog Input",
+  "ru": "аналоговый вход",
+  "en": "analog input",
+  "abbr": "AI"
+ },
+ {
+  "kk": "Analog Output",
+  "ru": "аналоговый выход",
+  "en": "analog output",
+  "abbr": "AO"
+ },
+ {
+  "kk": "Analog Value",
+  "ru": "аналоговое значение",
+  "en": "analog value",
+  "abbr": "AV"
+ },
+ {
+  "kk": "Binary Input",
+  "ru": "двоичный вход",
+  "en": "binary input",
+  "abbr": "BI"
+ },
+ {
+  "kk": "Binary Output",
+  "ru": "двоичный выход",
+  "en": "binary output",
+  "abbr": "BO"
+ },
+ {
+  "kk": "Binary Value",
+  "ru": "двоичное значение",
+  "en": "binary value",
+  "abbr": "BV"
+ },
+ {
+  "kk": "ReadProperty",
+  "ru": "ReadProperty",
+  "en": "ReadProperty",
+  "abbr": ""
+ },
+ {
+  "kk": "WriteProperty",
+  "ru": "WriteProperty",
+  "en": "WriteProperty",
+  "abbr": ""
+ },
+ {
+  "kk": "Who-Is/I-Am",
+  "ru": "Who-Is/I-Am",
+  "en": "Who-Is/I-Am",
+  "abbr": ""
+ },
+ {
+  "kk": "COV",
+  "ru": "изменение значения",
+  "en": "change of value",
+  "abbr": "COV"
+ },
+ {
+  "kk": "BACnet/IP",
+  "ru": "BACnet/IP",
+  "en": "BACnet/IP",
+  "abbr": ""
+ },
+ {
+  "kk": "BACnet router",
+  "ru": "маршрутизатор BACnet",
+  "en": "BACnet router",
+  "abbr": ""
+ },
+ {
+  "kk": "network number",
+  "ru": "номер сети",
+  "en": "network number",
+  "abbr": ""
+ },
+ {
+  "kk": "PICS",
+  "ru": "заявление о соответствии реализации протокола",
+  "en": "protocol implementation conformance statement",
+  "abbr": "PICS"
  }
 ]
