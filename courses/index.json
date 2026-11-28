@@ -1,6 +1,10 @@
 {
  "packs": [
   {
+   "path": "courses/building-automation/01-intro.json",
+   "v": "652cbc0fea96"
+  },
+  {
    "path": "courses/control-modeling/01-boiler-pressure.json",
    "v": "cbc86cb7296a"
   },
