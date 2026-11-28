@@ -590,7 +590,14 @@ function norm(){
   if(!S.split){S.split=1;S.courses.slice().forEach(c=>{if(c.single||!c.pid)return;c.lectures.filter(L=>L.pack).forEach(L=>{const n={id:uid(),pid:L.lid,single:true,src:c.name,name:L.title,space:c.space,folder:null,emoji:c.emoji,lectures:[L]};n.ord=nextOrd(n.space,null);S.courses.push(n);S.cards.forEach(k=>{if(k.cid===c.id&&k.lec===L.id)k.cid=n.id});if(S.last&&S.last.c===c.id&&S.last.l===L.id)S.last.c=n.id});c.lectures=c.lectures.filter(L=>!L.pack);if(!c.lectures.length){S.cards.forEach(k=>{if(k.cid===c.id)k.cid=null});S.courses=S.courses.filter(x=>x.id!==c.id)}})}
 }
 function load(){try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}if(!S||typeof S!=='object')S=seed();norm()}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+/* pack lesson parts live in IndexedDB ('p:'+lecture id): localStorage is ~5 MB and overflowed, so nothing was saved */
+const stored=new WeakSet();let saveWarned=false;
+function persistParts(){S.courses.forEach(c=>c.lectures.forEach(L=>{if(L.pack&&Array.isArray(L.inline)&&!stored.has(L.inline)){const v=L.inline;stored.add(v);idb.set('p:'+L.id,v).catch(()=>stored.delete(v))}}))}
+function save(){persistParts();try{localStorage.setItem(KEY,JSON.stringify(S,function(k,v){return k==='inline'&&this&&this.pack?undefined:v}));saveWarned=false}catch(e){if(!saveWarned){saveWarned=true;try{toast('Сақтау мүмкін болмады: телефон жады толы')}catch(_){}}}}
+async function hydrate(){const miss=[],jobs=[];S.courses.forEach(c=>c.lectures.forEach(L=>{if(!L.pack||Array.isArray(L.inline))return;jobs.push(idb.get('p:'+L.id).then(v=>{if(Array.isArray(v)){L.inline=v;stored.add(v)}else miss.push(L)},()=>miss.push(L)))}));
+  await Promise.all(jobs);
+  if(miss.length&&S.synced){const lids=new Set(miss.map(L=>L.lid));Object.keys(S.synced).forEach(k=>{const x=S.synced[k];if(x&&typeof x==='object'&&(x.lids||[]).some(l=>lids.has(l)))x.v='-'})}
+  if(jobs.length&&!noteOpen&&ov.hidden)render()}
 
 const course=id=>S.courses.find(c=>c.id===id);
 const folder=id=>S.folders.find(f=>f.id===id);
@@ -1185,7 +1192,7 @@ function grade(c,g){const now=Date.now();delete c.ex;c.last=g;c.reps=(c.reps||0)
 function arm(b,fn){if(b.dataset.arm){fn();return}b.dataset.arm='1';const o=b.textContent;b.textContent='Растау: өшіру';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent=o}},2500)}
 function flash(id,t){const m=$(id);if(m){m.textContent=t;clearTimeout(m._t);m._t=setTimeout(()=>{m.textContent=''},3000)}}
 function dropLectureFiles(L){(L.files||[]).forEach(k=>idb.del(k))}
-function deleteCourse(c){c.lectures.forEach(dropLectureFiles);S.cards=S.cards.filter(k=>k.cid!==c.id);S.courses=S.courses.filter(x=>x.id!==c.id);if(S.last&&S.last.c===c.id)S.last=null}
+function deleteCourse(c){c.lectures.forEach(L=>{dropLectureFiles(L);if(L.pack)idb.del('p:'+L.id)});S.cards=S.cards.filter(k=>k.cid!==c.id);S.courses=S.courses.filter(x=>x.id!==c.id);if(S.last&&S.last.c===c.id)S.last=null}
 function curSpace(){return tab==='skills'?'skills':'courses'}
 
 const ACT={
@@ -1357,7 +1364,7 @@ function applyTheme(t){const r=document.documentElement;if(t==='light'||t==='dar
   const dark=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);let m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',dark?'#1F2326':'#F1F2EE')}
 function setTheme(t){try{localStorage.setItem('besminut.theme',t)}catch(e){}applyTheme(t)}
 applyTheme(getTheme());
-load();save();render();syncPacks();document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPacks()});
+load();render();hydrate().catch(()=>{}).then(()=>{save();syncPacks()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPacks()});
 try{if('serviceWorker' in navigator&&location.protocol==='https:'&&!/claude/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
 })();
 </script>
