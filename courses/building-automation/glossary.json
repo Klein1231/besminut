@@ -376,5 +376,71 @@
   "ru": "счётчик вверх",
   "en": "count-up counter",
   "abbr": "CTU"
+ },
+ {
+  "kk": "жылу жинақтау пункті",
+  "ru": "тепловой пункт, ИТП/ЦТП",
+  "en": "heating substation (heat interface unit)",
+  "abbr": "ЖЖП"
+ },
+ {
+  "kk": "беру температурасы",
+  "ru": "температура подачи",
+  "en": "supply temperature",
+  "abbr": ""
+ },
+ {
+  "kk": "қайтару температурасы",
+  "ru": "температура обратки",
+  "en": "return temperature",
+  "abbr": ""
+ },
+ {
+  "kk": "температуралық график",
+  "ru": "температурный график",
+  "en": "heating curve (weather compensation curve)",
+  "abbr": ""
+ },
+ {
+  "kk": "ауа райына тәуелді реттеу",
+  "ru": "погодозависимое регулирование",
+  "en": "weather-compensated control",
+  "abbr": ""
+ },
+ {
+  "kk": "араластыру клапаны",
+  "ru": "смесительный клапан",
+  "en": "mixing valve",
+  "abbr": ""
+ },
+ {
+  "kk": "тәуелді схема",
+  "ru": "зависимая схема",
+  "en": "direct (dependent) connection",
+  "abbr": ""
+ },
+ {
+  "kk": "тәуелсіз схема",
+  "ru": "независимая схема",
+  "en": "indirect (independent) connection",
+  "abbr": ""
+ },
+ {
+  "kk": "жылу алмастырғыш",
+  "ru": "теплообменник",
+  "en": "heat exchanger",
+  "abbr": ""
+ },
+ {
+  "kk": "құрғақ жүріс",
+  "ru": "сухой ход",
+  "en": "dry running",
+  "abbr": ""
+ },
+ {
+  "kk": "сызықтық интерполяция",
+  "ru": "линейная интерполяция",
+  "en": "linear interpolation",
+  "abbr": ""
  }
 ]
