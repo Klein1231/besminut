@@ -1054,5 +1054,77 @@
   "ru": "OPC UA",
   "en": "OPC Unified Architecture",
   "abbr": "OPC UA"
+ },
+ {
+  "kk": "ақылды ғимарат",
+  "ru": "умное здание",
+  "en": "smart building",
+  "abbr": ""
+ },
+ {
+  "kk": "IoT",
+  "ru": "интернет вещей",
+  "en": "Internet of Things",
+  "abbr": "IoT"
+ },
+ {
+  "kk": "edge-шлюз",
+  "ru": "граничный шлюз",
+  "en": "edge gateway",
+  "abbr": ""
+ },
+ {
+  "kk": "брокер",
+  "ru": "брокер сообщений",
+  "en": "message broker",
+  "abbr": ""
+ },
+ {
+  "kk": "MQTT",
+  "ru": "MQTT",
+  "en": "message queuing telemetry transport",
+  "abbr": "MQTT"
+ },
+ {
+  "kk": "тақырып (MQTT)",
+  "ru": "топик",
+  "en": "topic",
+  "abbr": ""
+ },
+ {
+  "kk": "QoS",
+  "ru": "уровень качества доставки",
+  "en": "quality of service",
+  "abbr": "QoS"
+ },
+ {
+  "kk": "бұлт платформасы",
+  "ru": "облачная платформа",
+  "en": "cloud platform",
+  "abbr": ""
+ },
+ {
+  "kk": "FDD",
+  "ru": "обнаружение и диагностика неисправностей",
+  "en": "fault detection and diagnostics",
+  "abbr": "FDD"
+ },
+ {
+  "kk": "болжамды қызмет көрсету",
+  "ru": "предиктивное обслуживание",
+  "en": "predictive maintenance",
+  "abbr": ""
+ },
+ {
+  "kk": "LoRaWAN",
+  "ru": "LoRaWAN",
+  "en": "LoRaWAN",
+  "abbr": "LoRaWAN"
+ },
+ {
+  "kk": "Zigbee",
+  "ru": "Zigbee",
+  "en": "Zigbee",
+  "abbr": "Zigbee"
  }
 ]
