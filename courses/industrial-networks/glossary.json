@@ -1000,5 +1000,59 @@
   "ru": "отопление, вентиляция и кондиционирование",
   "en": "heating, ventilation and air conditioning",
   "abbr": "HVAC"
+ },
+ {
+  "kk": "firewall",
+  "ru": "межсетевой экран",
+  "en": "firewall",
+  "abbr": ""
+ },
+ {
+  "kk": "IT",
+  "ru": "информационные технологии (корпоративная сеть)",
+  "en": "information technology",
+  "abbr": "IT"
+ },
+ {
+  "kk": "OT",
+  "ru": "операционные технологии (технологическая сеть)",
+  "en": "operational technology",
+  "abbr": "OT"
+ },
+ {
+  "kk": "ең аз құқық қағидасы",
+  "ru": "принцип наименьших привилегий",
+  "en": "principle of least privilege",
+  "abbr": ""
+ },
+ {
+  "kk": "jump host",
+  "ru": "промежуточный (прыжковый) сервер",
+  "en": "jump host",
+  "abbr": ""
+ },
+ {
+  "kk": "VPN",
+  "ru": "виртуальная частная сеть",
+  "en": "virtual private network",
+  "abbr": "VPN"
+ },
+ {
+  "kk": "RDP",
+  "ru": "протокол удалённого рабочего стола",
+  "en": "remote desktop protocol",
+  "abbr": "RDP"
+ },
+ {
+  "kk": "өзгерісті басқару",
+  "ru": "управление изменениями",
+  "en": "change management",
+  "abbr": ""
+ },
+ {
+  "kk": "резервтік көшірме",
+  "ru": "резервная копия",
+  "en": "backup",
+  "abbr": ""
  }
 ]
