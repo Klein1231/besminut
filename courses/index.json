@@ -99,6 +99,10 @@
   {
    "path": "courses/scada/03-channel.json",
    "v": "c5d71bc68e83"
+  },
+  {
+   "path": "courses/scada/04-plc.json",
+   "v": "596a7a814a56"
   }
  ]
 }
