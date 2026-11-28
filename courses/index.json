@@ -183,6 +183,10 @@
   {
    "path": "courses/scada/11-alarms.json",
    "v": "f3870847a3f9"
+  },
+  {
+   "path": "courses/scada/12-archive-trend-report.json",
+   "v": "79fcb78f64ec"
   }
  ]
 }
