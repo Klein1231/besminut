@@ -712,5 +712,47 @@
   "ru": "ограничение нагрузки (пиковая нагрузка)",
   "en": "load shedding / demand limiting",
   "abbr": ""
+ },
+ {
+  "kk": "ТП",
+  "ru": "трансформаторная подстанция",
+  "en": "transformer substation",
+  "abbr": "ТП"
+ },
+ {
+  "kk": "ВРУ",
+  "ru": "вводно-распределительное устройство",
+  "en": "main distribution (incoming) unit",
+  "abbr": "ВРУ"
+ },
+ {
+  "kk": "ГРЩ",
+  "ru": "главный распределительный щит",
+  "en": "main distribution board",
+  "abbr": "ГРЩ"
+ },
+ {
+  "kk": "автоматты ажыратқыш",
+  "ru": "автоматический выключатель",
+  "en": "circuit breaker",
+  "abbr": ""
+ },
+ {
+  "kk": "қалдық ток құрылғысы",
+  "ru": "УЗО",
+  "en": "residual current device",
+  "abbr": "ҚТҚ"
+ },
+ {
+  "kk": "талғампаздық",
+  "ru": "селективность",
+  "en": "selectivity",
+  "abbr": ""
+ },
+ {
+  "kk": "қуат коэффициенті",
+  "ru": "коэффициент мощности (cosφ)",
+  "en": "power factor",
+  "abbr": ""
  }
 ]
