@@ -814,5 +814,77 @@
   "ru": "дребезг линка",
   "en": "link flap",
   "abbr": ""
+ },
+ {
+  "kk": "OPC UA",
+  "ru": "OPC UA",
+  "en": "OPC UA",
+  "abbr": "OPC UA"
+ },
+ {
+  "kk": "OPC UA сервері",
+  "ru": "сервер OPC UA",
+  "en": "OPC UA server",
+  "abbr": ""
+ },
+ {
+  "kk": "OPC UA клиенті",
+  "ru": "клиент OPC UA",
+  "en": "OPC UA client",
+  "abbr": ""
+ },
+ {
+  "kk": "address space",
+  "ru": "адресное пространство",
+  "en": "address space",
+  "abbr": ""
+ },
+ {
+  "kk": "түйін",
+  "ru": "узел",
+  "en": "node",
+  "abbr": ""
+ },
+ {
+  "kk": "NodeId",
+  "ru": "идентификатор узла",
+  "en": "node identifier",
+  "abbr": ""
+ },
+ {
+  "kk": "subscription",
+  "ru": "подписка",
+  "en": "subscription",
+  "abbr": ""
+ },
+ {
+  "kk": "monitored item",
+  "ru": "отслеживаемый элемент",
+  "en": "monitored item",
+  "abbr": ""
+ },
+ {
+  "kk": "deadband",
+  "ru": "зона нечувствительности",
+  "en": "deadband",
+  "abbr": ""
+ },
+ {
+  "kk": "сертификат",
+  "ru": "сертификат",
+  "en": "certificate",
+  "abbr": ""
+ },
+ {
+  "kk": "security policy",
+  "ru": "политика безопасности",
+  "en": "security policy",
+  "abbr": ""
+ },
+ {
+  "kk": "өндірісті басқару жүйесі",
+  "ru": "система управления производством",
+  "en": "manufacturing execution system",
+  "abbr": "MES"
  }
 ]
