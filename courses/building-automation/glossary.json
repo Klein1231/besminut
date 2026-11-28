@@ -1186,5 +1186,53 @@
   "ru": "энергоаудит",
   "en": "energy audit",
   "abbr": ""
+ },
+ {
+  "kk": "BIM",
+  "ru": "информационное моделирование зданий",
+  "en": "building information modeling",
+  "abbr": "BIM"
+ },
+ {
+  "kk": "IFC",
+  "ru": "отраслевые базовые классы (обменный формат)",
+  "en": "industry foundation classes",
+  "abbr": "IFC"
+ },
+ {
+  "kk": "COBie",
+  "ru": "COBie",
+  "en": "construction operations building information exchange",
+  "abbr": "COBie"
+ },
+ {
+  "kk": "MEP",
+  "ru": "инженерные системы (ОВК, электро, водоснабжение)",
+  "en": "mechanical, electrical, plumbing",
+  "abbr": "MEP"
+ },
+ {
+  "kk": "сыйыспау (clash)",
+  "ru": "коллизия",
+  "en": "clash",
+  "abbr": ""
+ },
+ {
+  "kk": "цифрлық егіз",
+  "ru": "цифровой двойник",
+  "en": "digital twin",
+  "abbr": ""
+ },
+ {
+  "kk": "as-built",
+  "ru": "исполнительная модель",
+  "en": "as-built model",
+  "abbr": ""
+ },
+ {
+  "kk": "openBIM",
+  "ru": "открытый BIM",
+  "en": "openBIM",
+  "abbr": ""
  }
 ]
