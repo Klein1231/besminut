@@ -604,5 +604,83 @@
   "ru": "заявление о соответствии реализации протокола",
   "en": "protocol implementation conformance statement",
   "abbr": "PICS"
+ },
+ {
+  "kk": "таратылған автоматтандыру",
+  "ru": "распределённая автоматизация",
+  "en": "distributed automation",
+  "abbr": ""
+ },
+ {
+  "kk": "KNX",
+  "ru": "KNX",
+  "en": "KNX",
+  "abbr": ""
+ },
+ {
+  "kk": "KNX TP",
+  "ru": "KNX TP",
+  "en": "KNX TP",
+  "abbr": "TP"
+ },
+ {
+  "kk": "топтық адрес",
+  "ru": "групповой адрес",
+  "en": "group address",
+  "abbr": ""
+ },
+ {
+  "kk": "физикалық адрес",
+  "ru": "физический адрес",
+  "en": "physical address",
+  "abbr": ""
+ },
+ {
+  "kk": "телеграмма",
+  "ru": "телеграмма",
+  "en": "telegram",
+  "abbr": ""
+ },
+ {
+  "kk": "ETS",
+  "ru": "ETS",
+  "en": "Engineering Tool Software",
+  "abbr": "ETS"
+ },
+ {
+  "kk": "LonWorks",
+  "ru": "LonWorks",
+  "en": "LonWorks",
+  "abbr": ""
+ },
+ {
+  "kk": "желілік айнымалы",
+  "ru": "сетевая переменная",
+  "en": "network variable",
+  "abbr": ""
+ },
+ {
+  "kk": "байластыру",
+  "ru": "привязка",
+  "en": "binding",
+  "abbr": ""
+ },
+ {
+  "kk": "шлюз",
+  "ru": "шлюз",
+  "en": "gateway",
+  "abbr": ""
+ },
+ {
+  "kk": "тег",
+  "ru": "тег",
+  "en": "tag",
+  "abbr": ""
+ },
+ {
+  "kk": "ғимаратты басқару жүйесі",
+  "ru": "система управления зданием",
+  "en": "building management system",
+  "abbr": "BMS"
  }
 ]
