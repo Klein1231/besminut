@@ -502,5 +502,89 @@
   "ru": "тег SCADA",
   "en": "SCADA tag",
   "abbr": ""
+ },
+ {
+  "kk": "Modbus TCP",
+  "ru": "Modbus TCP",
+  "en": "Modbus TCP",
+  "abbr": "TCP"
+ },
+ {
+  "kk": "Ethernet",
+  "ru": "Ethernet",
+  "en": "Ethernet",
+  "abbr": ""
+ },
+ {
+  "kk": "IP-адрес",
+  "ru": "IP-адрес",
+  "en": "IP address",
+  "abbr": ""
+ },
+ {
+  "kk": "порт",
+  "ru": "порт",
+  "en": "port",
+  "abbr": ""
+ },
+ {
+  "kk": "коммутатор",
+  "ru": "коммутатор",
+  "en": "network switch",
+  "abbr": ""
+ },
+ {
+  "kk": "маршрутизация",
+  "ru": "маршрутизация",
+  "en": "routing",
+  "abbr": ""
+ },
+ {
+  "kk": "өткізу қабілеті",
+  "ru": "пропускная способность",
+  "en": "bandwidth",
+  "abbr": ""
+ },
+ {
+  "kk": "киберқауіпсіздік",
+  "ru": "кибербезопасность",
+  "en": "cybersecurity",
+  "abbr": ""
+ },
+ {
+  "kk": "BACnet",
+  "ru": "BACnet",
+  "en": "BACnet",
+  "abbr": ""
+ },
+ {
+  "kk": "нысандық модель",
+  "ru": "объектная модель",
+  "en": "object model",
+  "abbr": ""
+ },
+ {
+  "kk": "OPC UA",
+  "ru": "OPC UA",
+  "en": "OPC UA",
+  "abbr": "OPC UA"
+ },
+ {
+  "kk": "метадерек",
+  "ru": "метаданные",
+  "en": "metadata",
+  "abbr": ""
+ },
+ {
+  "kk": "драйвер",
+  "ru": "драйвер",
+  "en": "driver",
+  "abbr": ""
+ },
+ {
+  "kk": "жаңарту жиілігі",
+  "ru": "частота обновления",
+  "en": "update rate",
+  "abbr": ""
  }
 ]

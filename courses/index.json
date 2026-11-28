@@ -139,6 +139,10 @@
   {
    "path": "courses/scada/06-register-map.json",
    "v": "b9da9bf6c571"
+  },
+  {
+   "path": "courses/scada/07-modbus-tcp.json",
+   "v": "f760fcf8ef3a"
   }
  ]
 }
