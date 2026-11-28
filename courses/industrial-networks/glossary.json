@@ -886,5 +886,83 @@
   "ru": "система управления производством",
   "en": "manufacturing execution system",
   "abbr": "MES"
+ },
+ {
+  "kk": "MQTT",
+  "ru": "MQTT",
+  "en": "MQTT",
+  "abbr": "MQTT"
+ },
+ {
+  "kk": "publish/subscribe",
+  "ru": "публикация/подписка",
+  "en": "publish/subscribe",
+  "abbr": ""
+ },
+ {
+  "kk": "broker",
+  "ru": "брокер",
+  "en": "broker",
+  "abbr": ""
+ },
+ {
+  "kk": "publisher",
+  "ru": "издатель",
+  "en": "publisher",
+  "abbr": ""
+ },
+ {
+  "kk": "subscriber",
+  "ru": "подписчик",
+  "en": "subscriber",
+  "abbr": ""
+ },
+ {
+  "kk": "topic",
+  "ru": "топик",
+  "en": "topic",
+  "abbr": ""
+ },
+ {
+  "kk": "wildcard",
+  "ru": "подстановочный символ",
+  "en": "wildcard",
+  "abbr": ""
+ },
+ {
+  "kk": "QoS",
+  "ru": "уровень качества обслуживания",
+  "en": "quality of service",
+  "abbr": "QoS"
+ },
+ {
+  "kk": "retained message",
+  "ru": "сохранённое сообщение",
+  "en": "retained message",
+  "abbr": ""
+ },
+ {
+  "kk": "Last Will",
+  "ru": "последняя воля",
+  "en": "Last Will",
+  "abbr": ""
+ },
+ {
+  "kk": "edge gateway",
+  "ru": "пограничный шлюз",
+  "en": "edge gateway",
+  "abbr": ""
+ },
+ {
+  "kk": "ACL",
+  "ru": "список контроля доступа",
+  "en": "access control list",
+  "abbr": "ACL"
+ },
+ {
+  "kk": "TLS",
+  "ru": "защита транспортного уровня",
+  "en": "transport layer security",
+  "abbr": "TLS"
  }
 ]
