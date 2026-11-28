@@ -832,5 +832,89 @@
   "ru": "автоматическая установка пожаротушения (АУПТ)",
   "en": "automatic fire suppression system",
   "abbr": "АӨСҚ"
+ },
+ {
+  "kk": "күзет сигнализациясы",
+  "ru": "охранная сигнализация",
+  "en": "intruder alarm",
+  "abbr": ""
+ },
+ {
+  "kk": "аймақ",
+  "ru": "зона (шлейф)",
+  "en": "zone",
+  "abbr": ""
+ },
+ {
+  "kk": "магнитті контакт",
+  "ru": "магнитоконтактный датчик",
+  "en": "magnetic contact",
+  "abbr": ""
+ },
+ {
+  "kk": "қозғалыс датчигі",
+  "ru": "датчик движения (PIR)",
+  "en": "motion detector (PIR)",
+  "abbr": "PIR"
+ },
+ {
+  "kk": "кіруді басқару жүйесі",
+  "ru": "система контроля и управления доступом (СКУД)",
+  "en": "access control system",
+  "abbr": "КБЖ"
+ },
+ {
+  "kk": "оқу құрылғысы",
+  "ru": "считыватель",
+  "en": "reader",
+  "abbr": ""
+ },
+ {
+  "kk": "контроллер (КБЖ)",
+  "ru": "контроллер доступа",
+  "en": "access controller",
+  "abbr": ""
+ },
+ {
+  "kk": "сәйкестендіру",
+  "ru": "идентификация",
+  "en": "identification",
+  "abbr": ""
+ },
+ {
+  "kk": "IP-бейнебақылау",
+  "ru": "IP-видеонаблюдение",
+  "en": "IP video surveillance",
+  "abbr": ""
+ },
+ {
+  "kk": "NVR",
+  "ru": "сетевой видеорегистратор",
+  "en": "network video recorder",
+  "abbr": "NVR"
+ },
+ {
+  "kk": "PoE",
+  "ru": "питание по Ethernet",
+  "en": "power over Ethernet",
+  "abbr": "PoE"
+ },
+ {
+  "kk": "бейнеаналитика",
+  "ru": "видеоаналитика",
+  "en": "video analytics",
+  "abbr": ""
+ },
+ {
+  "kk": "fail-safe құлып",
+  "ru": "замок, открывающийся при пропадании питания",
+  "en": "fail-safe lock",
+  "abbr": ""
+ },
+ {
+  "kk": "anti-passback",
+  "ru": "запрет повторного прохода",
+  "en": "anti-passback",
+  "abbr": ""
  }
 ]
