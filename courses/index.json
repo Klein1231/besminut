@@ -75,6 +75,10 @@
   {
    "path": "courses/scada/01-place.json",
    "v": "cc2f4f331885"
+  },
+  {
+   "path": "courses/scada/02-signals.json",
+   "v": "63f319c9f872"
   }
  ]
 }
