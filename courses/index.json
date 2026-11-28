@@ -119,6 +119,10 @@
   {
    "path": "courses/scada/04-plc.json",
    "v": "596a7a814a56"
+  },
+  {
+   "path": "courses/scada/05-modbus-rtu.json",
+   "v": "f0eec04aa144"
   }
  ]
 }
