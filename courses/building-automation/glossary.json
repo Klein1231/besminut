@@ -1126,5 +1126,65 @@
   "ru": "Zigbee",
   "en": "Zigbee",
   "abbr": "Zigbee"
+ },
+ {
+  "kk": "энергия менеджменті жүйесі",
+  "ru": "система энергетического менеджмента (EMS)",
+  "en": "energy management system",
+  "abbr": "EMS"
+ },
+ {
+  "kk": "АСКУЭ",
+  "ru": "автоматизированная система коммерческого учёта энергоресурсов",
+  "en": "automated metering system",
+  "abbr": "АСКУЭ"
+ },
+ {
+  "kk": "ішкі есептегіш",
+  "ru": "субсчётчик",
+  "en": "submeter",
+  "abbr": ""
+ },
+ {
+  "kk": "базалық жүктеме",
+  "ru": "базовая нагрузка",
+  "en": "base load",
+  "abbr": ""
+ },
+ {
+  "kk": "градус-тәулік",
+  "ru": "градусо-сутки",
+  "en": "degree-days",
+  "abbr": "HDD"
+ },
+ {
+  "kk": "өтелу мерзімі",
+  "ru": "срок окупаемости",
+  "en": "payback period",
+  "abbr": ""
+ },
+ {
+  "kk": "ISO 50001",
+  "ru": "ISO 50001",
+  "en": "ISO 50001",
+  "abbr": "ISO 50001"
+ },
+ {
+  "kk": "LEED",
+  "ru": "LEED",
+  "en": "Leadership in Energy and Environmental Design",
+  "abbr": "LEED"
+ },
+ {
+  "kk": "BREEAM",
+  "ru": "BREEAM",
+  "en": "BREEAM",
+  "abbr": "BREEAM"
+ },
+ {
+  "kk": "энергоаудит",
+  "ru": "энергоаудит",
+  "en": "energy audit",
+  "abbr": ""
  }
 ]
