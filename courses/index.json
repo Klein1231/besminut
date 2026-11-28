@@ -167,6 +167,10 @@
   {
    "path": "courses/scada/09-operator-screen.json",
    "v": "5b452b4ea36e"
+  },
+  {
+   "path": "courses/scada/10-control-access.json",
+   "v": "3f1fdfd5f398"
   }
  ]
 }
