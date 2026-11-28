@@ -63,6 +63,10 @@
   {
    "path": "courses/python/00-plan.json",
    "v": "1023c94c51b3"
+  },
+  {
+   "path": "courses/scada/01-place.json",
+   "v": "cc2f4f331885"
   }
  ]
 }
