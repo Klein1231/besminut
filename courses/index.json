@@ -171,6 +171,10 @@
   {
    "path": "courses/scada/10-control-access.json",
    "v": "3f1fdfd5f398"
+  },
+  {
+   "path": "courses/scada/11-alarms.json",
+   "v": "f3870847a3f9"
   }
  ]
 }
