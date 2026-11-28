@@ -916,5 +916,83 @@
   "ru": "запрет повторного прохода",
   "en": "anti-passback",
   "abbr": ""
+ },
+ {
+  "kk": "байланыс хаттамасы",
+  "ru": "протокол связи",
+  "en": "communication protocol",
+  "abbr": ""
+ },
+ {
+  "kk": "мастер",
+  "ru": "ведущий (мастер)",
+  "en": "master",
+  "abbr": ""
+ },
+ {
+  "kk": "слейв",
+  "ru": "ведомый (слейв)",
+  "en": "slave",
+  "abbr": ""
+ },
+ {
+  "kk": "регистр",
+  "ru": "регистр",
+  "en": "register",
+  "abbr": ""
+ },
+ {
+  "kk": "функция коды",
+  "ru": "код функции",
+  "en": "function code",
+  "abbr": "FC"
+ },
+ {
+  "kk": "CRC",
+  "ru": "циклический контроль избыточности",
+  "en": "cyclic redundancy check",
+  "abbr": "CRC"
+ },
+ {
+  "kk": "BACnet объектісі",
+  "ru": "объект BACnet",
+  "en": "BACnet object",
+  "abbr": ""
+ },
+ {
+  "kk": "COV",
+  "ru": "изменение значения (подписка)",
+  "en": "change of value",
+  "abbr": "COV"
+ },
+ {
+  "kk": "KNX",
+  "ru": "KNX",
+  "en": "KNX",
+  "abbr": "KNX"
+ },
+ {
+  "kk": "топтық мекенжай",
+  "ru": "групповой адрес",
+  "en": "group address",
+  "abbr": ""
+ },
+ {
+  "kk": "физикалық мекенжай",
+  "ru": "физический адрес",
+  "en": "physical address",
+  "abbr": ""
+ },
+ {
+  "kk": "ETS",
+  "ru": "инструмент ETS",
+  "en": "Engineering Tool Software",
+  "abbr": "ETS"
+ },
+ {
+  "kk": "шлюз",
+  "ru": "шлюз",
+  "en": "gateway",
+  "abbr": ""
  }
 ]
