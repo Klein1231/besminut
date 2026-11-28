@@ -148,5 +148,101 @@
   "ru": "BACnet",
   "en": "BACnet",
   "abbr": "BACnet"
+ },
+ {
+  "kk": "дифференциалды сигнал",
+  "ru": "дифференциальный сигнал",
+  "en": "differential signal",
+  "abbr": ""
+ },
+ {
+  "kk": "тізбектік интерфейс",
+  "ru": "последовательный интерфейс",
+  "en": "serial interface",
+  "abbr": ""
+ },
+ {
+  "kk": "топология",
+  "ru": "топология",
+  "en": "topology",
+  "abbr": ""
+ },
+ {
+  "kk": "сызықтық шина",
+  "ru": "линейная шина",
+  "en": "linear bus",
+  "abbr": ""
+ },
+ {
+  "kk": "магистраль",
+  "ru": "магистраль",
+  "en": "trunk",
+  "abbr": ""
+ },
+ {
+  "kk": "шағылу",
+  "ru": "отражение",
+  "en": "reflection",
+  "abbr": ""
+ },
+ {
+  "kk": "терминатор",
+  "ru": "терминатор",
+  "en": "termination resistor",
+  "abbr": ""
+ },
+ {
+  "kk": "толқындық кедергі",
+  "ru": "волновое сопротивление",
+  "en": "characteristic impedance",
+  "abbr": ""
+ },
+ {
+  "kk": "драйвер",
+  "ru": "драйвер",
+  "en": "driver",
+  "abbr": ""
+ },
+ {
+  "kk": "ығысу резисторы",
+  "ru": "смещающий резистор",
+  "en": "bias resistor",
+  "abbr": ""
+ },
+ {
+  "kk": "трансивер",
+  "ru": "трансивер",
+  "en": "transceiver",
+  "abbr": ""
+ },
+ {
+  "kk": "бұралған жұп",
+  "ru": "витая пара",
+  "en": "twisted pair",
+  "abbr": ""
+ },
+ {
+  "kk": "экран",
+  "ru": "экран",
+  "en": "shield",
+  "abbr": ""
+ },
+ {
+  "kk": "теңестіруші ток",
+  "ru": "уравнительный ток",
+  "en": "equalizing current",
+  "abbr": ""
+ },
+ {
+  "kk": "Modbus RTU",
+  "ru": "Modbus RTU",
+  "en": "Modbus RTU",
+  "abbr": ""
+ },
+ {
+  "kk": "BACnet MS/TP",
+  "ru": "BACnet MS/TP",
+  "en": "BACnet MS/TP",
+  "abbr": ""
  }
 ]
